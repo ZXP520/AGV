@@ -1,0 +1,9 @@
+﻿#ifndef __RUNCONTROL_H_
+#define __RUNCONTROL_H_
+
+void RunControl(void);
+void WorkRunControl(void);
+
+#endif
+
+
