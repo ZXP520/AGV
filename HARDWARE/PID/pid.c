@@ -16,7 +16,7 @@ struct
 void PID_Init(void)
 {
 	pid.kp=0;
-  pid.ki=0;
+    pid.ki=0;
 	pid.kd=0;
 	pid.PWM=0;
 	pid.error[0]=0;
