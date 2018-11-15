@@ -27,13 +27,12 @@ static void Stm32_Init(void)
 	PID_Init();									//PID参数初始化
  	LED_Init();			     				//LED端口初始化
 	KEY_Init();          				//初始化与按键连接的硬件接口
-	
+	TIM_SetCompare1(TIM3,600);
 }
  
 int main(void)
  {		
 	Stm32_Init();
-	TIM_SetCompare1(TIM3,600);
  	while(1)
 	{
 		

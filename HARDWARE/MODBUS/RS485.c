@@ -196,7 +196,7 @@ void RS485_Init(void)
 //定时器7初始化
 void Timer7_Init(void)
 {
-				TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+		TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
         NVIC_InitTypeDef NVIC_InitStructure;
 
         RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM7, ENABLE); //TIM7时钟使能 
