@@ -1,4 +1,4 @@
-﻿#ifndef __TIMER_H
+#ifndef __TIMER_H
 #define __TIMER_H
 #include "sys.h"
 //////////////////////////////////////////////////////////////////////////////////	 
@@ -15,6 +15,19 @@
 //////////////////////////////////////////////////////////////////////////////////   
 
 
-void TIM4_Int_Init(u16 arr,u16 psc);
-void TIM3_PWM_Init(u16 arr,u16 psc);
+extern u8  TIM3CH1_CAPTURE_STA;		   				
+extern u16	TIM3CH1_CAPTURE_VAL;	
+extern u8  TIM3CH2_CAPTURE_STA;		    				
+extern u16	TIM3CH2_CAPTURE_VAL;	
+extern u8  TIM3CH3_CAPTURE_STA;				    				
+extern u16	TIM3CH3_CAPTURE_VAL;	
+extern u8  TIM3CH4_CAPTURE_STA;			    				
+extern u16	TIM3CH4_CAPTURE_VAL;	
+
+extern u32 LeftEncoder_Cnt,RightEncoder_Cnt;//左右轮计数全局化
+
+
+void TIM2_Int_Init(u16 arr,u16 psc);
+void TIM8_PWM_Init(u16 arr,u16 psc);
+void TIM3_Cap_Init(u16 arr,u16 psc);
 #endif

@@ -1,4 +1,4 @@
-﻿#ifndef __USART_H
+#ifndef __USART_H
 #define __USART_H
 #include "stdio.h"	
 #include "sys.h" 
@@ -27,12 +27,27 @@
 ////////////////////////////////////////////////////////////////////////////////// 	
 #define USART_REC_LEN  			200  	//定义最大接收字节数 200
 #define EN_USART1_RX 			1		//使能（1）/禁止（0）串口1接收
+
+#define USART2_MAX_RECV_LEN 200
+#define USART2_MAX_SEND_LEN 200
+
+//定义共用体,接收数组和发送数组
+extern union Data{
+    int  InRxData[50];
+    u8 	 ChRxData[200];
+}TXData,RXData;
+
 	  	
 extern u8  USART_RX_BUF[USART_REC_LEN]; //接收缓冲,最大USART_REC_LEN个字节.末字节为换行符 
+extern char  USART2_TX_ROSDATA[USART2_MAX_SEND_LEN];//单片机发给ROS的数据
 extern u16 USART_RX_STA;         		//接收状态标记	
 //如果想串口中断接收，请不要注释以下宏定义
 void uart_init(u32 bound);
-void DealUartCmd(void);
+void USART2_init(u32 bound);
+void u2_printf(char* fmt,...);
+
+void SendDataToRos(char *data);
+
 #endif
 
 

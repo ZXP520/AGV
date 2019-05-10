@@ -2,6 +2,8 @@
 #include <stdio.h> 
 #include <stdlib.h> 
 #include "include.h"
+
+
 struct 
 {
 	float kp;
@@ -10,13 +12,11 @@ struct
 	float error[3];
 	u16 PWM;
 }pid;
-
-
 ///PID初始化
 void PID_Init(void)
 {
-	pid.kp=0;
-    pid.ki=0;
+	pid.kp=5;
+  pid.ki=0;
 	pid.kd=0;
 	pid.PWM=0;
 	pid.error[0]=0;
@@ -33,9 +33,9 @@ u16 PID_Calculation(u16 set,u16 yout)
 {
 	u16 out=0;
 	pid.error[0]=set-yout;
-	out=pid.kp*(pid.error[0]-pid.error[1])  +								  	//p
-			pid.ki* pid.error[0] 							  + 									//i
-			pid.kd*(pid.error[0]-2*pid.error[1] + pid.error[2]);		//d
+	out=pid.kp*(pid.error[0]-pid.error[1])  +						    //p
+	pid.ki* pid.error[0] 							  + 		//i
+	pid.kd*(pid.error[0]-2*pid.error[1] + pid.error[2]);		//d
 	
 	pid.PWM+=out;
 	pid.error[1]=pid.error[0];
@@ -44,6 +44,9 @@ u16 PID_Calculation(u16 set,u16 yout)
 	printf("%d\n",pid.PWM);
 	return pid.PWM;
 }
+
+
+
 
 
 

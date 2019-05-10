@@ -1,4 +1,4 @@
-﻿#include "led.h"
+#include "led.h"
 
 //////////////////////////////////////////////////////////////////////////////////	 
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
@@ -15,7 +15,7 @@
 
 //初始化PB5和PE5为输出口.并使能这两个口的时钟		    
 //LED IO初始化
-
+u8 Buzzer_flag=0;
 
 
 void LED_Init(void)
@@ -25,14 +25,35 @@ void LED_Init(void)
  	
  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB|RCC_APB2Periph_GPIOE, ENABLE);	 //使能PB,PE端口时钟
 	
- GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;				 //LED0-->PB.5 端口配置
+ GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7|GPIO_Pin_8;				 //LED0-->PB.5 端口配置B5->R_BK  B6->R_EN  B7->R_FR  B8->buzzer
  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //推挽输出
  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		 //IO口速度为50MHz
  GPIO_Init(GPIOB, &GPIO_InitStructure);					 //根据设定参数初始化GPIOB.5
- GPIO_SetBits(GPIOB,GPIO_Pin_5);						 //PB.5 输出高
 
- GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;	    		 //LED1-->PE.5 端口配置, 推挽输出
+ GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5;	    		 //LED1-->PE.5 端口配置, 推挽输出 E3->L_BK  E4->L_EN  E5->L_FR
  GPIO_Init(GPIOE, &GPIO_InitStructure);	  				 //推挽输出 ，IO口速度为50MHz
- GPIO_SetBits(GPIOE,GPIO_Pin_5); 						 //PE.5 输出高 
+ R_BK=0;
+ L_BK=0;
+ R_EN=0;
+ L_EN=0;
+ buzzer=0;
+}
+void Buzzer(void)
+{
+	static u8 time=0;
+	if(Buzzer_flag&&time%2)
+	{
+		Buzzer_flag=0;
+		buzzer=1;
+	}
+	else
+	{
+		buzzer=0;
+	}
+	time++;
+	if(time>8)
+	{
+		time=0;
+	}
 }
  

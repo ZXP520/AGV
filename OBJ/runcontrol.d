@@ -16,3 +16,7 @@
 ..\obj\runcontrol.o: ..\HARDWARE\ADC\adc.h
 ..\obj\runcontrol.o: D:\keil5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\runcontrol.o: ..\HARDWARE\RUNCONTROL\runcontrol.h
+..\obj\runcontrol.o: ..\HARDWARE\LED\led.h
+..\obj\runcontrol.o: ..\HARDWARE\TIMER\timer.h
+..\obj\runcontrol.o: ..\SYSTEM\usart\usart.h
+..\obj\runcontrol.o: ..\HARDWARE\CONTROL\control.h

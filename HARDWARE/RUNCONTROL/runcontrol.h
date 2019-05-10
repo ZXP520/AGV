@@ -1,9 +1,9 @@
-﻿#ifndef __RUNCONTROL_H_
+#ifndef __RUNCONTROL_H_
 #define __RUNCONTROL_H_
+#include "sys.h"
 
-void RunControl(void);
-void WorkRunControl(void);
-
+void Wheelcontrol(void);
+void ReadWheelCnt(void);
 #endif
 
 

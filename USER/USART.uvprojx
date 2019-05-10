@@ -369,7 +369,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\HARDWARE\LED;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\STM32F10x_FWLib\inc;..\CORE;..\HARDWARE\KEY;..\HARDWARE\TIMER;..\HARDWARE\ADC;..\HARDWARE\PID;..\HARDWARE\RUNCONTROL;..\HARDWARE\MODBUS</IncludePath>
+              <IncludePath>..\HARDWARE\LED;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\STM32F10x_FWLib\inc;..\CORE;..\HARDWARE\KEY;..\HARDWARE\TIMER;..\HARDWARE\ADC;..\HARDWARE\PID;..\HARDWARE\RUNCONTROL;..\HARDWARE\MODBUS;..\HARDWARE\PS;..\HARDWARE\CONTROL;..\HARDWARE\MPU6050;..\HARDWARE\KALMAN;..\HARDWARE\DEALDATA</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -433,39 +433,34 @@
           <GroupName>HARDWARE</GroupName>
           <Files>
             <File>
-              <FileName>led.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\LED\led.c</FilePath>
-            </File>
-            <File>
-              <FileName>key.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\KEY\key.c</FilePath>
-            </File>
-            <File>
               <FileName>timer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\TIMER\timer.c</FilePath>
             </File>
             <File>
-              <FileName>adc.c</FileName>
+              <FileName>led.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HARDWARE\ADC\adc.c</FilePath>
+              <FilePath>..\HARDWARE\LED\led.c</FilePath>
             </File>
             <File>
-              <FileName>pid.c</FileName>
+              <FileName>control.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HARDWARE\PID\pid.c</FilePath>
+              <FilePath>..\HARDWARE\CONTROL\control.c</FilePath>
             </File>
             <File>
-              <FileName>runcontrol.c</FileName>
+              <FileName>mpu6050.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HARDWARE\RUNCONTROL\runcontrol.c</FilePath>
+              <FilePath>..\HARDWARE\MPU6050\mpu6050.c</FilePath>
             </File>
             <File>
-              <FileName>RS485.c</FileName>
+              <FileName>kalman.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HARDWARE\MODBUS\RS485.c</FilePath>
+              <FilePath>..\HARDWARE\KALMAN\kalman.c</FilePath>
+            </File>
+            <File>
+              <FileName>dealdata.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\DEALDATA\dealdata.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -536,6 +531,11 @@
               <FileName>stm32f10x_adc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\STM32F10x_FWLib\src\stm32f10x_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\STM32F10x_FWLib\src\stm32f10x_i2c.c</FilePath>
             </File>
           </Files>
         </Group>
