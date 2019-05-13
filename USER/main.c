@@ -27,8 +27,8 @@ static void Stm32_Init(void)
 	uart_init(115200);				  //串口初始化为115200
 	USART2_init(115200);
 	
-	//I2C_MPU6050_Init();         //IIC³õÊ¼»¯
-	//InitMPU6050();              //MPU6050³õÊ¼»¯
+	I2C_MPU6050_Init();         //IIC³õÊ¼»¯
+	InitMPU6050();              //MPU6050³õÊ¼»¯
 
 	LeftWheelSpeedSet(200);
 	RightWheelSpeedSet(200);
@@ -67,7 +67,7 @@ int main(void)
 		}
 		if(Flag_20ms)	//20MS
 		{
-			//Angle_Calcu();
+			Angle_Calcu();
 			//SendData_To_Ros();
 			Flag_20ms=0;
 		}

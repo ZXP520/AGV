@@ -186,9 +186,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>86</LineNumber>
+          <LineNumber>84</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134222504</Address>
+          <Address>134222888</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -202,18 +202,34 @@
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>216</LineNumber>
+          <LineNumber>81</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134221436</Address>
+          <Address>134222878</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>D:\椤圭洰\宸€烺OS灏忚溅\PID\0504\宸€烺OS灏忚溅\PID\code\car\HARDWARE\CONTROL\control.c</Filename>
+          <Filename>D:\椤圭洰\宸€烺OS灏忚溅\PID\0504\宸€烺OS灏忚溅\PID\code\car\HARDWARE\MPU6050\mpu6050.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\USART\../HARDWARE/CONTROL/control.c\216</Expression>
+          <Expression>\\USART\../HARDWARE/MPU6050/mpu6050.c\81</Expression>
+        </Bp>
+        <Bp>
+          <Number>2</Number>
+          <Type>0</Type>
+          <LineNumber>56</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134222706</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>D:\椤圭洰\宸€烺OS灏忚溅\PID\0504\宸€烺OS灏忚溅\PID\code\car\HARDWARE\MPU6050\mpu6050.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\USART\../HARDWARE/MPU6050/mpu6050.c\56</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -266,6 +282,16 @@
           <count>9</count>
           <WinNumber>1</WinNumber>
           <ItemText>RightWheel,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>10</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>MotoPwm</ItemText>
+        </Ww>
+        <Ww>
+          <count>11</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>PID_Control,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>
