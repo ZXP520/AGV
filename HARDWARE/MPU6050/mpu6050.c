@@ -77,9 +77,13 @@ void InitMPU6050(void) //初始化Mpu6050
 	I2C_ByteWrite(GYRO_CONFIG,0x18);
 	I2C_ByteWrite(ACCEL_CONFIG,0x01);*/
 	
-	 GetData(0x3C,0x03);
-	 I2C_ByteWrite(0x3C,0x00,0x14);   //
-   //I2C_ByteWrite(0x3C,0x02,0x00);   //
+	// GetData(0x3C,0x03);
+	 I2C_ByteWrite(0x1a,0x00,0x14);   //
+   I2C_ByteWrite(0x1a,0x02,0x00);   //
+	
+	 I2C_ByteWrite(0xA6,0x31,0x0B);   //测量范围,正负16g，13位模式
+   I2C_ByteWrite(0xA6,0x2D,0x08);   //选择电源模式   参考pdf24页
+   I2C_ByteWrite(0xA6,0x2E,0x80);   //使能 DATA_READY 中断
 	
 	 I2C_ByteWrite(SlaveAddress,PWR_M, 0x80);   //
    I2C_ByteWrite(SlaveAddress,SMPL, 0x07);    //
@@ -87,9 +91,7 @@ void InitMPU6050(void) //初始化Mpu6050
    I2C_ByteWrite(SlaveAddress,INT_C, 0x00 );  //
    I2C_ByteWrite(SlaveAddress,PWR_M, 0x00);   //
 	
-	 I2C_ByteWrite(0xA6,0x31,0x0B);   //测量范围,正负16g，13位模式
-   I2C_ByteWrite(0xA6,0x2D,0x08);   //选择电源模式   参考pdf24页
-   I2C_ByteWrite(0xA6,0x2E,0x80);   //使能 DATA_READY 中断
+	
 	
 	 
 }
