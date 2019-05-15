@@ -29,8 +29,7 @@ static void Stm32_Init(void)
 	uart_init(115200);				  //串口初始化为115200
 	USART2_init(115200);
 	Time_Config();
-	I2C_MPU6050_Init();         //IIC³õÊ¼»¯
-	//InitMPU6050();              //MPU6050³õÊ¼»¯
+	InitMPU6050();              //MPU6050³õÊ¼»¯
 
 	LeftWheelSpeedSet(0);
 	RightWheelSpeedSet(0);

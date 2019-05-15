@@ -1,4 +1,5 @@
-
+#ifndef __MPU6050_H
+#define __MPU6050_H
 #include "sys.h"
 
 /* MPU6050 Register Address ------------------------------------------------------------*/
@@ -65,7 +66,7 @@
 #define GZ_L	0x22
 #define PWR_M	0x3E
 
-void 	I2C_MPU6050_Init(void); 
 void 	InitMPU6050(void);
 unsigned int GetData(uint8_t SlaveAddr,unsigned char REG_Address);
 unsigned int GetQMC5883Data(uint8_t SlaveAddr,unsigned char REG_Address); //获得16位数据
+#endif
