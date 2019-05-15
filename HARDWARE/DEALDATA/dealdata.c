@@ -5,6 +5,7 @@
 #include "timer.h"
 #include "usart.h"	
 #include "mpu6050.h"
+#include "Encoder.h"
 
 //数据测试函数
 void TestSendData_To_Ros(void)
@@ -39,54 +40,14 @@ void SendData_To_Ros(void)
 	
 	int Cheksum=0;//校验和
 	u8 i=0;
-	
-	static u32 TempLeftEncoder_Cnt=0,TempRightEncoder_Cnt=0;
-	
-	//编码器脉冲个数计算
-	if(LeftEncoder_Cnt>=TempLeftEncoder_Cnt)
-	{
-		TempLeftEncoder_Cnt=LeftEncoder_Cnt-TempLeftEncoder_Cnt;
-	}
-	else//溢出
-	{
-		TempLeftEncoder_Cnt=TempLeftEncoder_Cnt-LeftEncoder_Cnt;
-	}
-	
-	if(RightEncoder_Cnt>=TempRightEncoder_Cnt)
-	{
-		TempRightEncoder_Cnt=RightEncoder_Cnt-TempRightEncoder_Cnt;
-	}
-	else//溢出
-	{
-		TempRightEncoder_Cnt=TempRightEncoder_Cnt-RightEncoder_Cnt;
-	}
-	
+		
 	TXData.InRxData[0]=DATAHEAD;  //头
 	TXData.InRxData[1]=TXDATALENTH+AllWheel.imu_num;//包长度(8+imu轴数)	
-	if(RightWheel.Direct)//正方向
-	{
-		TXData.InRxData[2]=TempRightEncoder_Cnt;						//右轮编码器
-	}
-	else
-	{
-		TXData.InRxData[2]=-TempRightEncoder_Cnt;						//右轮编码器
-	}
-	
-	if(LeftWheel.Direct)//正方向
-	{
-		TXData.InRxData[3]=TempLeftEncoder_Cnt;					//左轮编码器
-	}
-	else
-	{
-		TXData.InRxData[3]=-TempLeftEncoder_Cnt;					//左轮编码器
-	}
+	TXData.InRxData[2]=GetEncoder.V3;						//右轮编码器
+	TXData.InRxData[3]=GetEncoder.V5;					//左轮编码器
 	TXData.InRxData[4]=Wheel_SPACING;	//电机驱动轮间距
 	TXData.InRxData[5]=Wheel_D;				//轮子直径
 	TXData.InRxData[6]=Wheel_RATIO;		//电机减速比
-	
-	//更新编码缓存器值
-	TempLeftEncoder_Cnt	=LeftEncoder_Cnt ;
-	TempRightEncoder_Cnt=RightEncoder_Cnt;
 	//获得IMU数据
 	switch(AllWheel.imu_num)
 	{
@@ -119,7 +80,9 @@ void SendData_To_Ros(void)
 			TXData.InRxData[11]=GetData(0xA6,ACCEL_YOUT_H);
 			TXData.InRxData[12]=GetData(0xA6,ACCEL_ZOUT_H);					//加速度计数据
 			
-			TXData.InRxData[13]=0,TXData.InRxData[14]=0,TXData.InRxData[15]=0;//磁力计数据
+			TXData.InRxData[13]=GetQMC5883Data(0x1A,0x00);
+			TXData.InRxData[14]=GetQMC5883Data(0x1A,0x02);
+			TXData.InRxData[15]=GetQMC5883Data(0x1A,0x04);					//磁力计数据
 			break;
 		}
 		default: break;
@@ -130,7 +93,7 @@ void SendData_To_Ros(void)
 	{
 		Cheksum+=TXData.InRxData[i];
 	}
-	TXData.InRxData[7]=Cheksum; //校验和
+	TXData.InRxData[TXData.InRxData[1]-1]=Cheksum; //校验和
 	
 	for(i=0;i<TXData.InRxData[1]*4;i++)                         //循环发送数据
   {

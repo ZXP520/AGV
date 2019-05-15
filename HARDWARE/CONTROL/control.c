@@ -4,6 +4,7 @@
 #include "led.h"
 #include "timer.h"
 #include "usart.h"
+#include "Encoder.h"
 /**************************************************************************
 函数功能：轮子速度设置 mm/s
 入口参数：direction(1为前进，0为后退)
@@ -49,6 +50,7 @@ void  RightWheelSpeedSet(int speed)
 	RightWheel.AimsEncoder=speed*SPEED_TO_ENCODER+0.5;//+0.5四舍五入
 }
 
+
 /**************************************************************************
 函数功能：PID运动控制
 					10ms进一次
@@ -59,56 +61,24 @@ PID_AbsoluteType PID_Control;//定义PID算法的结构体
 void RunWheelcontrol(void)
 {	
 	static u8 cnt=0;
-	static u32 TempLeftEncoder_Cnt=0,TempRightEncoder_Cnt=0;
-	
-	if(LeftEncoder_Cnt>=TempLeftEncoder_Cnt)
-	{
-		TempLeftEncoder_Cnt=LeftEncoder_Cnt-TempLeftEncoder_Cnt;
-	}
-	else//溢出
-	{
-		TempLeftEncoder_Cnt=TempLeftEncoder_Cnt-LeftEncoder_Cnt;
-	}
-	
-	if(RightEncoder_Cnt>=TempRightEncoder_Cnt)
-	{
-		TempRightEncoder_Cnt=RightEncoder_Cnt-TempRightEncoder_Cnt;
-	}
-	else//溢出
-	{
-		TempRightEncoder_Cnt=TempRightEncoder_Cnt-RightEncoder_Cnt;
-	}
-	
 	cnt++;
 	//获得PID调速后的PWM
-	LeftWheel.MotoPwm =myabs( LeftIncremental_PI(TempLeftEncoder_Cnt ,LeftWheel.AimsEncoder ));//获得PID调速后的PWM
-	RightWheel.MotoPwm=myabs(RightIncremental_PI(TempRightEncoder_Cnt,RightWheel.AimsEncoder));
+	LeftWheel.MotoPwm =myabs( LeftIncremental_PI(abs(GetEncoder.V5) ,LeftWheel.AimsEncoder ));//获得PID调速后的PWM
+	RightWheel.MotoPwm=myabs(RightIncremental_PI(abs(GetEncoder.V3) ,RightWheel.AimsEncoder));
 	
 	
 	Xianfu_Pwm();//限幅
 	
 	if(cnt%10==0)
 	{
-		u2_printf("PWM:	%d   Right:	%d	PWM:	%d  Left:	%d	aim:%d\r\n",RightWheel.MotoPwm,TempRightEncoder_Cnt,LeftWheel.MotoPwm,TempLeftEncoder_Cnt,LeftWheel.AimsEncoder);
+		u2_printf("PWM:	%d   Right:	%d	PWM:	%d  Left:	%d	aim:%d\r\n",RightWheel.MotoPwm,abs(GetEncoder.V3),LeftWheel.MotoPwm,abs(GetEncoder.V5),LeftWheel.AimsEncoder);
 		//u2_printf("@%d@",LeftEncoder_Cnt);
 	}
-	
-	//更新编码器的值
-	TempLeftEncoder_Cnt	=LeftEncoder_Cnt ;
-	TempRightEncoder_Cnt=RightEncoder_Cnt;
-	
-	
-	
 	
 	//设置PWM与方向
 	SetLeft_Pwm (LeftWheel.MotoPwm  ,LeftWheel.Direct );
 	SetRight_Pwm(RightWheel.MotoPwm ,RightWheel.Direct);
 	
-	//计数清零
-	//LeftEncoder_Cnt=0;
-	//RightEncoder_Cnt=0;
-	//TIM3CH3_CAPTURE_STA=0;
-	//TIM3CH1_CAPTURE_STA=0;
 }
 
 
@@ -202,7 +172,7 @@ int LeftIncremental_PI (int Encoder,int Target)
 	 static float Bias=0,Pwm=0,Last_bias=0;
 	 Bias=Target-Encoder;                                  //计算偏差
 	 Pwm+=LVelocity_KP*(Bias-Last_bias)+LVelocity_KI*Bias;   //增量式PI控制器
-	 if(Pwm>1100){Pwm=1100;}
+	 if(Pwm>1200){Pwm=1200;}
 	 else if(Pwm<0){Pwm=0;}
 	 Last_bias=Bias;	                                     //保存上一次偏差 
 	 return Pwm;                                           //增量输出
@@ -217,7 +187,7 @@ int RightIncremental_PI (int Encoder,int Target)
 	 static float Bias=0,Pwm=0,Last_bias=0;
 	 Bias=Target-Encoder;                                  //计算偏差
 	 Pwm+=RVelocity_KP*(Bias-Last_bias)+RVelocity_KI*Bias;   //增量式PI控制器
-	 if(Pwm>1100){Pwm=1100;}
+	 if(Pwm>1200){Pwm=1200;}
 	 else if(Pwm<0){Pwm=0;}
 	 Last_bias=Bias;	                                     //保存上一次偏差 
 	 return Pwm;                                           //增量输出

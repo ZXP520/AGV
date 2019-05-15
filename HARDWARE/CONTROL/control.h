@@ -10,7 +10,7 @@
 #define Wheel_SPACING		  263  //mm轮间距
 #define Wheel_RATIO     	56   //减速比
 #define ENCODER_LINE     	11   //编码器线数
-#define SPEED_TO_ENCODER  Wheel_RATIO*ENCODER_LINE/Wheel_D/PI/100				//速度转编码脉冲  (个/10ms)
+#define SPEED_TO_ENCODER  4*Wheel_RATIO*ENCODER_LINE/Wheel_D/PI/100				//速度转编码脉冲  (个/10ms)(4为编码器模式，一个脉冲四个计数)
 #define TIM8_Period  1200			 //TIME8重装值
 #define MAXSPEED     500       //最大速度mm/s
 
@@ -53,8 +53,6 @@ void PID_AbsoluteMode(PID_AbsoluteType* PID);
 
 
 extern Wheel LeftWheel,RightWheel,AllWheel;//定义左右轮结构体
-
-
 
 void RunWheelcontrol(void);
 void SetLeft_Pwm(int moto,u8 mode);

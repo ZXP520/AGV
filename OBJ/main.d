@@ -24,3 +24,5 @@
 ..\obj\main.o: ..\HARDWARE\MPU6050\mpu6050.h
 ..\obj\main.o: ..\HARDWARE\KALMAN\kalman.h
 ..\obj\main.o: ..\HARDWARE\DEALDATA\dealdata.h
+..\obj\main.o: stm32f10x_it.h
+..\obj\main.o: ..\HARDWARE\ENCODER\Encoder.h

@@ -70,16 +70,11 @@ uint8_t I2C_ByteRead(uint8_t SlaveAddr,uint8_t REG_Address) //´ÓIICÉè±¸¼Ä´æÆ÷ÖÐ¶
 
 void InitMPU6050(void) //³õÊ¼»¯Mpu6050
 {
-	/*
-	I2C_ByteWrite(PWR_MGMT_1,0x00);//½â³ýÐÝÃß×´Ì¬
-	I2C_ByteWrite(SMPLRT_DIV,0x07);
-	I2C_ByteWrite(CONFIG,0x06);
-	I2C_ByteWrite(GYRO_CONFIG,0x18);
-	I2C_ByteWrite(ACCEL_CONFIG,0x01);*/
-	
-	// GetData(0x3C,0x03);
-	 I2C_ByteWrite(0x1a,0x00,0x14);   //
-   I2C_ByteWrite(0x1a,0x02,0x00);   //
+
+	 I2C_ByteWrite(0x1A,0x0B,0x01); 
+   I2C_ByteWrite(0x1A,0x20,0x40);
+   I2C_ByteWrite(0x1A,0x21,0x01);
+   I2C_ByteWrite(0x1A,0x09,0x0d); //
 	
 	 I2C_ByteWrite(0xA6,0x31,0x0B);   //²âÁ¿·¶Î§,Õý¸º16g£¬13Î»Ä£Ê½
    I2C_ByteWrite(0xA6,0x2D,0x08);   //Ñ¡ÔñµçÔ´Ä£Ê½   ²Î¿¼pdf24Ò³
@@ -101,6 +96,14 @@ unsigned int GetData(uint8_t SlaveAddr,unsigned char REG_Address) //»ñµÃ16Î»Êý¾Ý
 	char H,L;
 	H=I2C_ByteRead(SlaveAddr,REG_Address);
 	L=I2C_ByteRead(SlaveAddr,REG_Address+1);
+	return (H<<8)+L;   //ºÏ³ÉÊý¾Ý
+}
+
+unsigned int GetQMC5883Data(uint8_t SlaveAddr,unsigned char REG_Address) //»ñµÃ16Î»Êý¾Ý
+{
+	char H,L;
+	L=I2C_ByteRead(SlaveAddr,REG_Address);
+	H=I2C_ByteRead(SlaveAddr,REG_Address+1);
 	return (H<<8)+L;   //ºÏ³ÉÊý¾Ý
 }
 

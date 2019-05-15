@@ -14,6 +14,15 @@
 //All rights reserved									  
 //////////////////////////////////////////////////////////////////////////////////   
 
+#define MOTORB_ENCODER_TIM_CLK  	RCC_APB1Periph_TIM3
+#define MOTORB_ENCODER_CLK				RCC_APB2Periph_GPIOA
+#define MOTORB_ENCODER_PIN        GPIO_Pin_6
+#define MOTORB_ENCODER_PORT       GPIOA
+#define MOTORB_ENCODER_TIM        TIM3
+#define ICx_FILTER                6
+
+#define EncoderPeriod  20000
+
 
 extern u8  TIM3CH1_CAPTURE_STA;		   				
 extern u16	TIM3CH1_CAPTURE_VAL;	
@@ -30,4 +39,5 @@ extern u32 LeftEncoder_Cnt,RightEncoder_Cnt;//左右轮计数全局化
 void TIM2_Int_Init(u16 arr,u16 psc);
 void TIM8_PWM_Init(u16 arr,u16 psc);
 void TIM3_Cap_Init(u16 arr,u16 psc);
+void Time_Config(void);
 #endif

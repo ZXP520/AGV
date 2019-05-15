@@ -369,7 +369,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\HARDWARE\LED;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\STM32F10x_FWLib\inc;..\CORE;..\HARDWARE\KEY;..\HARDWARE\TIMER;..\HARDWARE\ADC;..\HARDWARE\PID;..\HARDWARE\RUNCONTROL;..\HARDWARE\MODBUS;..\HARDWARE\PS;..\HARDWARE\CONTROL;..\HARDWARE\MPU6050;..\HARDWARE\KALMAN;..\HARDWARE\DEALDATA</IncludePath>
+              <IncludePath>..\HARDWARE\LED;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\STM32F10x_FWLib\inc;..\CORE;..\HARDWARE\KEY;..\HARDWARE\TIMER;..\HARDWARE\ADC;..\HARDWARE\PID;..\HARDWARE\RUNCONTROL;..\HARDWARE\MODBUS;..\HARDWARE\PS;..\HARDWARE\CONTROL;..\HARDWARE\MPU6050;..\HARDWARE\KALMAN;..\HARDWARE\DEALDATA;..\HARDWARE\ENCODER</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -461,6 +461,11 @@
               <FileName>dealdata.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\DEALDATA\dealdata.c</FilePath>
+            </File>
+            <File>
+              <FileName>Encoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\ENCODER\Encoder.c</FilePath>
             </File>
           </Files>
         </Group>

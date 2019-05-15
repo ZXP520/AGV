@@ -1,6 +1,7 @@
 #include "timer.h"
 #include "led.h"
 #include "stm32f10x_tim.h"
+#include "control.h"	
 //////////////////////////////////////////////////////////////////////////////////	 
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
 //ALIENTEK战舰STM32开发板
@@ -19,6 +20,8 @@
 //arr：自动重装值。
 //psc：时钟预分频数
 //这里使用的是定时器3!
+
+/*
 void TIM2_Int_Init(u16 arr,u16 psc)
 {
   TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
@@ -45,6 +48,7 @@ void TIM2_Int_Init(u16 arr,u16 psc)
 
 	TIM_Cmd(TIM2, ENABLE);  //使能TIMx					 
 }
+
 
 u8 Flag_1ms=0,Flag_5ms=0,Flag_10ms=0,Flag_20ms=0,Flag_100ms=0,Flag_500ms=0,Flag_1000ms=0;
 //定时器3中断服务程序
@@ -84,7 +88,7 @@ void TIM2_IRQHandler(void)   //TIM3中断
 		TIM_ClearITPendingBit(TIM2, TIM_IT_Update );  //清除TIMx更新中断标志 
 	}
 }
-
+*/
 
 //PWM输出初始化
 //arr：自动重装值
@@ -147,6 +151,10 @@ void TIM8_PWM_Init(u16 arr,u16 psc)
 
 
 
+
+/*
+TIM3_Cap_Init(0XFFFF,72-1); //输入捕获1us
+
 u8  TIM3CH1_CAPTURE_STA=0;		    				
 u16	TIM3CH1_CAPTURE_VAL;	
 u16	TIM3CH1_CAPTURE_VALold;	
@@ -164,10 +172,11 @@ u8  TIM3CH4_CAPTURE_STA=0;
 u16	TIM3CH4_CAPTURE_VAL;	
 u16	TIM3CH4_CAPTURE_VALold;	
 
-
+*/
 
 
 /* TIM3输入捕获配置 */
+/*
 void TIM3_Cap_Init(u16 arr,u16 psc) 
 {
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
@@ -442,9 +451,98 @@ void TIM3_IRQHandler(void)
 	 
 }
  
+*/
+
+void TIM3_Configuration(void)//编码器接口设置TIM3/PA6-A相  PA7-B相
+{
+  GPIO_InitTypeDef GPIO_InitStructure; 
+	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+	TIM_ICInitTypeDef  TIM_ICInitStructure;
+	
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+ 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA , ENABLE);  
+	                                                       				
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6|GPIO_Pin_7;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;          
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	   
+	GPIO_Init(GPIOA, &GPIO_InitStructure);				 
+	GPIO_WriteBit(GPIOA, GPIO_Pin_6,Bit_SET);
+	GPIO_WriteBit(GPIOA, GPIO_Pin_7,Bit_SET); 
+
+  TIM_TimeBaseStructure.TIM_Period = EncoderPeriod; 
+	TIM_TimeBaseStructure.TIM_Prescaler = 0;
+	TIM_TimeBaseStructure.TIM_ClockDivision = 0;    
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up; 
+	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure); 
+	
+	//设置定时器3位编码器模式 IT1 IT2位上升沿计数
+	TIM_EncoderInterfaceConfig(TIM3, TIM_EncoderMode_TI12,TIM_ICPolarity_BothEdge,TIM_ICPolarity_BothEdge);
+	TIM_ICStructInit(&TIM_ICInitStructure);
+  TIM_ICInitStructure.TIM_ICFilter = 8;      
+  TIM_ICInit(TIM3, &TIM_ICInitStructure);
+  TIM_ClearFlag(TIM3, TIM_FLAG_Update);     
+  TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE); 
+  TIM3->CNT = 0;
+	TIM_Cmd(TIM3, ENABLE);
+}
+
+void TIM5_Configuration(void)//编码器接口设置TIM5/PA0-A相  PA1-B相
+{
+  GPIO_InitTypeDef GPIO_InitStructure; 
+	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+	TIM_ICInitTypeDef  TIM_ICInitStructure;
+	
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
+ 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA , ENABLE); 
+	                                                       				
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;         
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	 
+	GPIO_Init(GPIOA, &GPIO_InitStructure);				 
+	GPIO_WriteBit(GPIOA, GPIO_Pin_0,Bit_SET);
+	GPIO_WriteBit(GPIOA, GPIO_Pin_1,Bit_SET); 
+
+  TIM_TimeBaseStructure.TIM_Period = EncoderPeriod;
+	TIM_TimeBaseStructure.TIM_Prescaler = 0;
+	TIM_TimeBaseStructure.TIM_ClockDivision = 0; 
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up; 
+	TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure); 
+	
+	//设置定时器5位编码器模式 IT1 IT2位上升沿计数
+	TIM_EncoderInterfaceConfig(TIM5, TIM_EncoderMode_TI12,TIM_ICPolarity_BothEdge,TIM_ICPolarity_BothEdge);
+	TIM_ICStructInit(&TIM_ICInitStructure);
+  TIM_ICInitStructure.TIM_ICFilter = 8;  
+  TIM_ICInit(TIM5, &TIM_ICInitStructure);
+  TIM_ClearFlag(TIM5, TIM_FLAG_Update); 
+  TIM_ITConfig(TIM5, TIM_IT_Update, ENABLE);
+  TIM5->CNT = 0;
+	TIM_Cmd(TIM5, ENABLE);
+}
+
+//中断处理函数在stm32f10x_it.c里面
+static void SysTick_init(u8 u_ms )
+{  
+	 u16 fac_us,fac_ms;
+   SysTick->CTRL&=0xfffffffb;    //bit2清空,选择外部时钟  HCLK/8
+   fac_us=SystemCoreClock/8000000;		//每秒钟的计数次数 单位为K	      
+   fac_ms=(u16)fac_us*1000;
+
+   SysTick->LOAD=(u32)u_ms*fac_ms;    //时间加载(SysTick->LOAD为24bit)
+   SysTick->VAL =0x00;                    //清空计数器
+   SysTick->CTRL |=(1<<0 |1<<1);    //开始倒数    
+    /* Function successful */
+}
 
 
-
+void Time_Config(void)
+{
+	SysTick_init(1);//开启1ms的系统滴答定时器
+	TIM3_Configuration();
+	TIM5_Configuration();
+	TIM8_PWM_Init(TIM8_Period-1,12-1);	//不分频。PWM频率=72000/5/1200=12Khz
+}
 
 
 

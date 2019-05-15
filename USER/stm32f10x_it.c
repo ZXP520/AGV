@@ -75,9 +75,44 @@ void PendSV_Handler(void)
 {
 }
  
+
+u8 Flag_1ms=0,Flag_5ms=0,Flag_10ms=0,Flag_20ms=0,Flag_100ms=0,Flag_500ms=0,Flag_1000ms=0;
 void SysTick_Handler(void)
 {
+		static u16 Time_cnt=0;
+		Time_cnt++;
+		Flag_1ms=1;
+		if(Time_cnt%10==0)
+		{
+			Flag_10ms=1;
+		}
+		if(Time_cnt%5==0)
+		{
+			Flag_5ms=1;
+		}
+		if(Time_cnt%20==0)
+		{
+			Flag_20ms=1;
+		}
+		if(Time_cnt%100==0)
+		{
+			Flag_100ms=1;
+		}
+		if(Time_cnt%500==0)
+		{
+			Flag_500ms=1;
+		}
+		if(Time_cnt%1000==0)
+		{
+			Flag_1000ms=1;
+			Time_cnt=0;
+		}
 }
+
+
+
+
+
 
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */
