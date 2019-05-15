@@ -186,9 +186,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>98</LineNumber>
+          <LineNumber>86</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134222464</Address>
+          <Address>134221974</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -198,22 +198,6 @@
           <Filename>D:\椤圭洰\宸€烺OS灏忚溅\PID\car\HARDWARE\DEALDATA\dealdata.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>92</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134222426</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>D:\椤圭洰\宸€烺OS灏忚溅\PID\car\HARDWARE\DEALDATA\dealdata.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\USART\../HARDWARE/DEALDATA/dealdata.c\92</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -286,6 +270,16 @@
           <count>13</count>
           <WinNumber>1</WinNumber>
           <ItemText>GetEncoder,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>14</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>TXData</ItemText>
+        </Ww>
+        <Ww>
+          <count>15</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>TXData</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

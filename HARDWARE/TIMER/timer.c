@@ -521,24 +521,14 @@ void TIM5_Configuration(void)//编码器接口设置TIM5/PA0-A相  PA1-B相
 	TIM_Cmd(TIM5, ENABLE);
 }
 
-//中断处理函数在stm32f10x_it.c里面
-static void SysTick_init(u8 u_ms )
-{  
-	 u16 fac_us,fac_ms;
-   SysTick->CTRL&=0xfffffffb;    //bit2清空,选择外部时钟  HCLK/8
-   fac_us=SystemCoreClock/8000000;		//每秒钟的计数次数 单位为K	      
-   fac_ms=(u16)fac_us*1000;
 
-   SysTick->LOAD=(u32)u_ms*fac_ms;    //时间加载(SysTick->LOAD为24bit)
-   SysTick->VAL =0x00;                    //清空计数器
-   SysTick->CTRL |=(1<<0 |1<<1);    //开始倒数    
-    /* Function successful */
-}
 
 
 void Time_Config(void)
 {
-	SysTick_init(1);//开启1ms的系统滴答定时器
+	
+	//中断处理函数在stm32f10x_it.c里面
+	SysTick_Config(SystemCoreClock/1000);//72000000/1000=72000  1MS中断
 	TIM3_Configuration();
 	TIM5_Configuration();
 	TIM8_PWM_Init(TIM8_Period-1,12-1);	//不分频。PWM频率=72000/5/1200=12Khz

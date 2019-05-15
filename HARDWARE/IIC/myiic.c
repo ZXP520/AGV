@@ -1,190 +1,246 @@
 #include "myiic.h"
-//////////////////////////////////////////////////////////////////////////////////	 
-//本程序只供学习使用，未经作者许可，不得用于其它任何用途
-//ALIENTEK战舰STM32开发板
-//IIC驱动 代码	   
-//正点原子@ALIENTEK
-//技术论坛:www.openedv.com
-//修改日期:2012/9/9
-//版本：V1.0
-//版权所有，盗版必究。
-//Copyright(C) 广州市星翼电子科技有限公司 2009-2019
-//All rights reserved									  
-//////////////////////////////////////////////////////////////////////////////////
+#include "delay.h"
+/*******************************************************************************
+* Function Name  : I2C_GPIO_Config
+* Description    : Configration Simulation IIC GPIO
+* Input          : None 
+* Output         : None
+* Return         : None
+****************************************************************************** */
+void I2C_GPIO_Config(void)
+{
+  GPIO_InitTypeDef  GPIO_InitStructure; 
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);	 //??PB,PE????
+	
+  GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_5;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+	//禁止JLink复用功能
+	GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE); 
+	
+	GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_4;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;  
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+	
+	
+}
 
-//因为系统的滴答时钟做了时间管理，无法延时
-void iicdelay_us(u16 time)
-{    
-   u16 i=0;  
-   while(time--)
-   {
-      i=10; 
-      while(i--) ;    
-   }
-}
- 
- 
-//初始化IIC
-void IIC_Init(void)
-{					     
-	GPIO_InitTypeDef GPIO_InitStructure;
-	RCC_APB2PeriphClockCmd(	RCC_APB2Periph_GPIOB, ENABLE );	
-	   
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10|GPIO_Pin_11;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP ;   //推挽输出
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	GPIO_SetBits(GPIOB,GPIO_Pin_10|GPIO_Pin_11); 	//PB10,PB11 输出高
-}
-//产生IIC起始信号
-void IIC_Start(void)
+/*******************************************************************************
+* Function Name  : I2C_delay
+* Description    : Simulation IIC Timing series delay
+* Input          : None
+* Output         : None
+* Return         : None
+****************************************************************************** */
+void I2C_delay(void)
 {
-	SDA_OUT();     //sda线输出
-	IIC_SDA=1;	  	  
-	IIC_SCL=1;
-	iicdelay_us(4);
- 	IIC_SDA=0;//START:when CLK is high,DATA change form high to low 
-	iicdelay_us(4);
-	IIC_SCL=0;//钳住I2C总线，准备发送或接收数据 
-}	  
-//产生IIC停止信号
-void IIC_Stop(void)
-{
-	SDA_OUT();//sda线输出
-	IIC_SCL=0;
-	IIC_SDA=0;//STOP:when CLK is high DATA change form low to high
- 	iicdelay_us(4);
-	IIC_SCL=1; 
-	IIC_SDA=1;//发送I2C总线结束信号
-	iicdelay_us(4);							   	
+		
+   u8 i=30; //这里可以优化速度	，经测试最低到5还能写入
+   while(i) 
+   { 
+     i--; 
+   }  
 }
-//等待应答信号到来
-//返回值：1，接收应答失败
-//        0，接收应答成功
-u8 IIC_Wait_Ack(void)
+
+void delay5ms(void)
 {
-	u8 ucErrTime=0;
-	SDA_IN();      //SDA设置为输入  
-	IIC_SDA=1;iicdelay_us(1);	   
-	IIC_SCL=1;iicdelay_us(1);	 
-	while(READ_SDA)
-	{
-		ucErrTime++;
-		if(ucErrTime>250)
-		{
-			IIC_Stop();
-			return 1;
-		}
-	}
-	IIC_SCL=0;//时钟输出0 	   
-	return 0;  
+		
+   //int i=5000;  
+	 int i=60;  
+   while(i) 
+   { 
+     i--; 
+   }  
+}
+/*******************************************************************************
+* Function Name  : I2C_Start
+* Description    : Master Start Simulation IIC Communication
+* Input          : None
+* Output         : None
+* Return         : Wheather	 Start
+****************************************************************************** */
+int I2C_Start(void)
+{
+	SDA_H;
+	SCL_H;
+	I2C_delay();
+	if(!SDA_read)return 0;	//SDA线为低电平则总线忙,退出
+	SDA_L;
+	I2C_delay();
+	if(SDA_read) return 0;	//SDA线为高电平则总线出错,退出
+	SDA_L;
+	I2C_delay();
+	return 1;
+}
+/*******************************************************************************
+* Function Name  : I2C_Stop
+* Description    : Master Stop Simulation IIC Communication
+* Input          : None
+* Output         : None
+* Return         : None
+****************************************************************************** */
+void I2C_Stop(void)
+{
+	SCL_L;
+	I2C_delay();
+	SDA_L;
+	I2C_delay();
+	SCL_H;
+	I2C_delay();
+	SDA_H;
+	I2C_delay();
 } 
-//产生ACK应答
-void IIC_Ack(void)
+/*******************************************************************************
+* Function Name  : I2C_Ack
+* Description    : Master Send Acknowledge Single
+* Input          : None
+* Output         : None
+* Return         : None
+****************************************************************************** */
+void I2C_Ack(void)
+{	
+	SCL_L;
+	I2C_delay();
+	SDA_L;
+	I2C_delay();
+	SCL_H;
+	I2C_delay();
+	SCL_L;
+	I2C_delay();
+}   
+/*******************************************************************************
+* Function Name  : I2C_NoAck
+* Description    : Master Send No Acknowledge Single
+* Input          : None
+* Output         : None
+* Return         : None
+****************************************************************************** */
+void I2C_NoAck(void)
+{	
+	SCL_L;
+	I2C_delay();
+	SDA_H;
+	I2C_delay();
+	SCL_H;
+	I2C_delay();
+	SCL_L;
+	I2C_delay();
+} 
+/*******************************************************************************
+* Function Name  : I2C_WaitAck
+* Description    : Master Reserive Slave Acknowledge Single
+* Input          : None
+* Output         : None
+* Return         : Wheather	 Reserive Slave Acknowledge Single
+****************************************************************************** */
+int I2C_WaitAck(void) 	 //返回为:=1有ACK,=0无ACK
 {
-	IIC_SCL=0;
-	SDA_OUT();
-	IIC_SDA=0;
-	iicdelay_us(2);
-	IIC_SCL=1;
-	iicdelay_us(2);
-	IIC_SCL=0;
-}
-//不产生ACK应答		    
-void IIC_NAck(void)
-{
-	IIC_SCL=0;
-	SDA_OUT();
-	IIC_SDA=1;
-	iicdelay_us(2);
-	IIC_SCL=1;
-	iicdelay_us(2);
-	IIC_SCL=0;
-}					 				     
-//IIC发送一个字节
-//返回从机有无应答
-//1，有应答
-//0，无应答			  
-void IIC_Send_Byte(u8 txd)
-{                        
-    u8 t;   
-	SDA_OUT(); 	    
-    IIC_SCL=0;//拉低时钟开始数据传输
-    for(t=0;t<8;t++)
-    {              
-        //IIC_SDA=(txd&0x80)>>7;
-		if((txd&0x80)>>7)
-			IIC_SDA=1;
-		else
-			IIC_SDA=0;
-		txd<<=1; 	  
-		iicdelay_us(2);   //对TEA5767这三个延时都是必须的
-		IIC_SCL=1;
-		iicdelay_us(2); 
-		IIC_SCL=0;	
-		iicdelay_us(2);
-    }	 
-} 	    
-//读1个字节，ack=1时，发送ACK，ack=0，发送nACK   
-u8 IIC_Read_Byte(unsigned char ack)
-{
-	unsigned char i,receive=0;
-	SDA_IN();//SDA设置为输入
-    for(i=0;i<8;i++ )
+	SCL_L;
+	I2C_delay();
+	SDA_H;			
+	I2C_delay();
+	SCL_H;
+	I2C_delay();
+	if(SDA_read)
 	{
-        IIC_SCL=0; 
-        iicdelay_us(2);
-		IIC_SCL=1;
-        receive<<=1;
-        if(READ_SDA)receive++;   
-		iicdelay_us(1); 
-    }					 
-    if (!ack)
-        IIC_NAck();//发送nACK
-    else
-        IIC_Ack(); //发送ACK   
-    return receive;
+      SCL_L;
+	  I2C_delay();
+      return 0;
+	}
+	SCL_L;
+	I2C_delay();
+	return 1;
 }
+/*******************************************************************************
+* Function Name  : I2C_SendByte
+* Description    : Master Send a Byte to Slave
+* Input          : Will Send Date
+* Output         : None
+* Return         : None
+****************************************************************************** */
+void I2C_SendByte(u8 SendByte) //数据从高位到低位//
+{
+    u8 i=8;
+    while(i--)
+    {
+        SCL_L;
+        I2C_delay();
+      if(SendByte&0x80)
+        SDA_H;  
+      else 
+        SDA_L;   
+        SendByte<<=1;
+        I2C_delay();
+		SCL_H;
+        I2C_delay();
+    }
+    SCL_L;
+}  
+/*******************************************************************************
+* Function Name  : I2C_RadeByte
+* Description    : Master Reserive a Byte From Slave
+* Input          : None
+* Output         : None
+* Return         : Date From Slave 
+****************************************************************************** */
+unsigned char I2C_RadeByte(void)  //数据从高位到低位//
+{ 
+    u8 i=8;
+    u8 ReceiveByte=0;
 
-
-
+    SDA_H;				
+    while(i--)
+    {
+      ReceiveByte<<=1;      
+      SCL_L;
+      I2C_delay();
+	  SCL_H;
+      I2C_delay();	
+      if(SDA_read)
+      {
+        ReceiveByte|=0x01;
+      }
+    }
+    SCL_L;
+    return ReceiveByte;
+} 
 //ZRX          
 //单字节写入*******************************************
-
-int Single_Write(unsigned char SlaveAddress,unsigned char REG_Address,unsigned char REG_data)
+u8 IIC_Write_One_Byte(unsigned char SlaveAddress,unsigned char REG_Address,unsigned char REG_data)		     //void
 {
-	IIC_Start();
-	IIC_Send_Byte(SlaveAddress);   //发送设备地址+写信号//I2C_SendByte(((REG_Address & 0x0700) >>7) | SlaveAddress & 0xFFFE);//设置高起始地址+器件地址 
-	if(!IIC_Wait_Ack()){IIC_Stop(); return 0;}
-	IIC_Send_Byte(REG_Address );   //设置低起始地址      
-	IIC_Wait_Ack();	
-	IIC_Send_Byte(REG_data);
-	IIC_Wait_Ack();   
-	IIC_Stop(); 
-	iicdelay_us(10);
-	return 1;
+  	if(!I2C_Start())return 0;
+    I2C_SendByte(SlaveAddress);   //发送设备地址+写信号//I2C_SendByte(((REG_Address & 0x0700) >>7) | SlaveAddress & 0xFFFE);//设置高起始地址+器件地址 
+    if(!I2C_WaitAck()){I2C_Stop(); return 0;}
+    I2C_SendByte(REG_Address );   //设置低起始地址      
+    I2C_WaitAck();	
+    I2C_SendByte(REG_data);
+    I2C_WaitAck();   
+    I2C_Stop(); 
+    delay5ms();
+    return 1;
 }
 
 //单字节读取*****************************************
-unsigned char Single_Read(unsigned char SlaveAddress,unsigned char REG_Address)
-{   
-	unsigned char REG_data;     	
-	IIC_Start();
-	IIC_Send_Byte(SlaveAddress); //I2C_SendByte(((REG_Address & 0x0700) >>7) | REG_Address & 0xFFFE);//设置高起始地址+器件地址 
-	if(!IIC_Wait_Ack()){IIC_Stop(); return 0;}
-	IIC_Send_Byte((u8) REG_Address);   //设置低起始地址      
-	IIC_Wait_Ack();
-	IIC_Start();
-	IIC_Send_Byte(SlaveAddress+1);
-	IIC_Wait_Ack();
-	REG_data= IIC_Read_Byte(0);
-	IIC_Stop();
+unsigned char IIC_Read_One_Byte(unsigned char SlaveAddress,unsigned char REG_Address)
+{   unsigned char REG_data;     	
+		if(!I2C_Start())return 0;
+    I2C_SendByte(SlaveAddress); //I2C_SendByte(((REG_Address & 0x0700) >>7) | REG_Address & 0xFFFE);//设置高起始地址+器件地址 
+    if(!I2C_WaitAck()){I2C_Stop(); return 0;}
+    I2C_SendByte((u8) REG_Address);   //设置低起始地址      
+    I2C_WaitAck();
+    I2C_Start();
+    I2C_SendByte(SlaveAddress+1);
+    I2C_WaitAck();
+
+		REG_data= I2C_RadeByte();
+    I2C_NoAck();
+    I2C_Stop();
+    //return TRUE;
 	return REG_data;
 
 }						      
-
-
-
 
 
 

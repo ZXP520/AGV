@@ -25,7 +25,7 @@ Machine Mach;
 static void Stm32_Init(void)
 {
 	NVIC_Configuration(); 	 		//设置NVIC中断分组2:2位抢占优先级，2位响应优先级
-	
+	//delay_init();
 	uart_init(115200);				  //串口初始化为115200
 	USART2_init(115200);
 	Time_Config();
@@ -93,8 +93,8 @@ int main(void)
 			}
 			if(time_cnt==5)
 			{
-				LeftWheelSpeedSet(300);
-				RightWheelSpeedSet(300);
+				//LeftWheelSpeedSet(300);
+				//RightWheelSpeedSet(300);
 				time_cnt=6;
 			}
 			Flag_1000ms=0;
