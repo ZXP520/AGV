@@ -43,6 +43,7 @@ void Get_Encoder_T3(void)
   CNT3_temp = GetEncoder.rcnt3 * prd + GetEncoder.cnt3; 
   GetEncoder.V3 = CNT3_temp - CNT3_last;		
   
+	
   while ((s32)(GetEncoder.V3)>Vbreak)				 
   {							      
    GetEncoder.rcnt3--;					      
@@ -95,6 +96,7 @@ void Get_Encoder_T5(void)
   CNT5_temp = GetEncoder.rcnt5 * prd + GetEncoder.cnt5;  
   GetEncoder.V5 = CNT5_temp - CNT5_last;		  
   
+	
   while ((s32)(GetEncoder.V5)>Vbreak)				  
   {							      
    GetEncoder.rcnt5--;					      

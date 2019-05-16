@@ -1,5 +1,4 @@
 #include "myiic.h"
-#include "delay.h"
 /*******************************************************************************
 * Function Name  : I2C_GPIO_Config
 * Description    : Configration Simulation IIC GPIO
@@ -28,32 +27,26 @@ void I2C_GPIO_Config(void)
 }
 
 /*******************************************************************************
-* Function Name  : I2C_delay
+* Function Name  : IICdelay_us
 * Description    : Simulation IIC Timing series delay
 * Input          : None
 * Output         : None
 * Return         : None
 ****************************************************************************** */
-void I2C_delay(void)
+
+void IICdelay_us(u32 nTimer)
 {
-		
-   u8 i=30; //这里可以优化速度	，经测试最低到5还能写入
-   while(i) 
-   { 
-     i--; 
-   }  
+	u32 i=0;
+	for(i=0;i<nTimer;i++){
+		__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();
+		__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();
+		__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();
+		__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();
+		__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();
+	}
 }
 
-void delay5ms(void)
-{
-		
-   //int i=5000;  
-	 int i=60;  
-   while(i) 
-   { 
-     i--; 
-   }  
-}
+
 /*******************************************************************************
 * Function Name  : I2C_Start
 * Description    : Master Start Simulation IIC Communication
@@ -65,13 +58,13 @@ int I2C_Start(void)
 {
 	SDA_H;
 	SCL_H;
-	I2C_delay();
+	IICdelay_us(2);
 	if(!SDA_read)return 0;	//SDA线为低电平则总线忙,退出
 	SDA_L;
-	I2C_delay();
+	IICdelay_us(2);
 	if(SDA_read) return 0;	//SDA线为高电平则总线出错,退出
 	SDA_L;
-	I2C_delay();
+	IICdelay_us(2);
 	return 1;
 }
 /*******************************************************************************
@@ -84,13 +77,13 @@ int I2C_Start(void)
 void I2C_Stop(void)
 {
 	SCL_L;
-	I2C_delay();
+	IICdelay_us(2);
 	SDA_L;
-	I2C_delay();
+	IICdelay_us(2);
 	SCL_H;
-	I2C_delay();
+	IICdelay_us(2);
 	SDA_H;
-	I2C_delay();
+	IICdelay_us(2);
 } 
 /*******************************************************************************
 * Function Name  : I2C_Ack
@@ -102,13 +95,13 @@ void I2C_Stop(void)
 void I2C_Ack(void)
 {	
 	SCL_L;
-	I2C_delay();
+	IICdelay_us(2);
 	SDA_L;
-	I2C_delay();
+	IICdelay_us(2);
 	SCL_H;
-	I2C_delay();
+	IICdelay_us(2);
 	SCL_L;
-	I2C_delay();
+	IICdelay_us(2);
 }   
 /*******************************************************************************
 * Function Name  : I2C_NoAck
@@ -120,13 +113,13 @@ void I2C_Ack(void)
 void I2C_NoAck(void)
 {	
 	SCL_L;
-	I2C_delay();
+	IICdelay_us(2);
 	SDA_H;
-	I2C_delay();
+	IICdelay_us(2);
 	SCL_H;
-	I2C_delay();
+	IICdelay_us(2);
 	SCL_L;
-	I2C_delay();
+	IICdelay_us(2);
 } 
 /*******************************************************************************
 * Function Name  : I2C_WaitAck
@@ -138,19 +131,19 @@ void I2C_NoAck(void)
 int I2C_WaitAck(void) 	 //返回为:=1有ACK,=0无ACK
 {
 	SCL_L;
-	I2C_delay();
+	IICdelay_us(2);
 	SDA_H;			
-	I2C_delay();
+	IICdelay_us(2);
 	SCL_H;
-	I2C_delay();
+	IICdelay_us(2);
 	if(SDA_read)
 	{
       SCL_L;
-	  I2C_delay();
+	  IICdelay_us(2);
       return 0;
 	}
 	SCL_L;
-	I2C_delay();
+	IICdelay_us(2);
 	return 1;
 }
 /*******************************************************************************
@@ -166,15 +159,15 @@ void I2C_SendByte(u8 SendByte) //数据从高位到低位//
     while(i--)
     {
         SCL_L;
-        I2C_delay();
+        IICdelay_us(2);
       if(SendByte&0x80)
         SDA_H;  
       else 
         SDA_L;   
         SendByte<<=1;
-        I2C_delay();
+        IICdelay_us(2);
 		SCL_H;
-        I2C_delay();
+        IICdelay_us(2);
     }
     SCL_L;
 }  
@@ -195,9 +188,9 @@ unsigned char I2C_RadeByte(void)  //数据从高位到低位//
     {
       ReceiveByte<<=1;      
       SCL_L;
-      I2C_delay();
+      IICdelay_us(2);
 	  SCL_H;
-      I2C_delay();	
+      IICdelay_us(2);	
       if(SDA_read)
       {
         ReceiveByte|=0x01;
@@ -218,7 +211,7 @@ u8 IIC_Write_One_Byte(unsigned char SlaveAddress,unsigned char REG_Address,unsig
     I2C_SendByte(REG_data);
     I2C_WaitAck();   
     I2C_Stop(); 
-    delay5ms();
+    //delay5ms();
     return 1;
 }
 

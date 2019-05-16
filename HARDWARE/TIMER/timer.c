@@ -526,7 +526,6 @@ void TIM5_Configuration(void)//编码器接口设置TIM5/PA0-A相  PA1-B相
 
 void Time_Config(void)
 {
-	
 	//中断处理函数在stm32f10x_it.c里面
 	SysTick_Config(SystemCoreClock/1000);//72000000/1000=72000  1MS中断
 	TIM3_Configuration();

@@ -13,10 +13,3 @@
 ..\obj\usart.o: ..\STM32F10x_FWLib\inc\misc.h
 ..\obj\usart.o: ..\SYSTEM\usart\usart.h
 ..\obj\usart.o: D:\keil5\ARM\ARMCC\Bin\..\include\stdio.h
-..\obj\usart.o: D:\keil5\ARM\ARMCC\Bin\..\include\string.h
-..\obj\usart.o: ..\HARDWARE\TIMER\include.h
-..\obj\usart.o: ..\STM32F10x_FWLib\inc\stm32f10x_tim.h
-..\obj\usart.o: ..\HARDWARE\ADC\adc.h
-..\obj\usart.o: D:\keil5\ARM\ARMCC\Bin\..\include\stdarg.h
-..\obj\usart.o: ..\HARDWARE\TIMER\timer.h
-..\obj\usart.o: ..\HARDWARE\DEALDATA\dealdata.h

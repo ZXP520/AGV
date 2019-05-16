@@ -1,5 +1,5 @@
-#ifndef __MPU6050_H
-#define __MPU6050_H
+#ifndef __GY85_H
+#define __GY85_H
 #include "sys.h"
 
 /* MPU6050 Register Address ------------------------------------------------------------*/
@@ -50,7 +50,6 @@
 #define	SlaveAddress	0xD0	//IIC写入时的地址字节数据
 
 
-
 #define WHO	    0x00
 #define	SMPL	0x15
 #define DLPF	0x16
@@ -58,15 +57,20 @@
 #define INT_S	0x1A
 #define	TMP_H	0x1B
 #define	TMP_L	0x1C
-#define	GX_H	0x1D
-#define	GX_L	0x1E
-#define	GY_H	0x1F
-#define	GY_L	0x20
-#define GZ_H	0x21
-#define GZ_L	0x22
+#define	GX_H	0x00
+#define	GX_L	0x01
+#define	GY_H	0x02
+#define	GY_L	0x03
+#define GZ_H	0x04
+#define GZ_L	0x05
 #define PWR_M	0x3E
 
-void 	InitMPU6050(void);
+
+#define	HMC5883L_Addr   0x1a	//磁场传感器器件地址
+#define	ADXL345_Addr    0xA6	//加速度传感器器件地址
+#define	ITG3050_Addr    0xD0	//陀螺仪传感器器件地址
+
+void 	InitGY85(void);
 unsigned int GetData(uint8_t SlaveAddr,unsigned char REG_Address);
 unsigned int GetQMC5883Data(uint8_t SlaveAddr,unsigned char REG_Address); //获得16位数据
 #endif

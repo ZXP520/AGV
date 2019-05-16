@@ -11,3 +11,6 @@
 ..\obj\stm32f10x_it.o: ..\STM32F10x_FWLib\inc\stm32f10x_rcc.h
 ..\obj\stm32f10x_it.o: ..\STM32F10x_FWLib\inc\stm32f10x_usart.h
 ..\obj\stm32f10x_it.o: ..\STM32F10x_FWLib\inc\misc.h
+..\obj\stm32f10x_it.o: ..\HARDWARE\CONTROL\control.h
+..\obj\stm32f10x_it.o: ..\SYSTEM\sys\sys.h
+..\obj\stm32f10x_it.o: ..\HARDWARE\ENCODER\Encoder.h

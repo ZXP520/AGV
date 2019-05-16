@@ -4,8 +4,9 @@
 #include "control.h"
 #include "timer.h"
 #include "usart.h"	
-#include "mpu6050.h"
+#include "gy85.h"
 #include "Encoder.h"
+#include "bsp_usart.h"
 
 //数据测试函数
 void TestSendData_To_Ros(void)
@@ -16,8 +17,8 @@ void TestSendData_To_Ros(void)
 	TXData.InRxData[0]=DATAHEAD;  //头
 	TXData.InRxData[1]=8;				//包长度	
 	TXData.InRxData[2]=100;			//左轮速度
-	TXData.InRxData[3]=-100;		//右轮速度
-	TXData.InRxData[4]=1;				//停车信号
+	TXData.InRxData[3]=100;		//右轮速度
+	TXData.InRxData[4]=0;				//停车信号
 	TXData.InRxData[5]=0;				//导航标志
 	TXData.InRxData[6]=3;				//陀螺仪轴数
 	for(i=0;i<TXData.InRxData[1]-1;i++)
@@ -26,11 +27,8 @@ void TestSendData_To_Ros(void)
 	}
 	TXData.InRxData[7]=Cheksum; //校验和
 	
-	for(i=0;i<TXData.InRxData[1]*4;i++)                         //循环发送数据
-  {
-      while(USART_GetFlagStatus(USART2,USART_FLAG_TC)==RESET); //循环发送,直到发送完毕   
-        USART_SendData(USART2,TXData.ChRxData[i]); 
-  } 
+	//DMA串口发送数据
+	USART2_DMA_TX(TXData.ChRxData,TXData.InRxData[1]*2);
 	
 }
 
@@ -43,46 +41,47 @@ void SendData_To_Ros(void)
 		
 	TXData.InRxData[0]=DATAHEAD;  //头
 	TXData.InRxData[1]=TXDATALENTH+AllWheel.imu_num;//包长度(8+imu轴数)	
-	TXData.InRxData[2]=GetEncoder.V3;						//右轮编码器
-	TXData.InRxData[3]=GetEncoder.V5;					//左轮编码器
-	TXData.InRxData[4]=Wheel_SPACING;	//电机驱动轮间距
-	TXData.InRxData[5]=Wheel_D;				//轮子直径
-	TXData.InRxData[6]=Wheel_RATIO;		//电机减速比
+	TXData.InRxData[2]=GetEncoder.V3;								//右轮编码器
+	TXData.InRxData[3]=GetEncoder.V5;								//左轮编码器
+	TXData.InRxData[4]=Wheel_SPACING;								//电机驱动轮间距
+	TXData.InRxData[5]=Wheel_D;											//轮子直径
+	TXData.InRxData[6]=Wheel_RATIO;									//电机减速比
 	//获得IMU数据
+	
 	switch(AllWheel.imu_num)
 	{
 		case 0: return;//为0则不发任何数据给ROS，初始默认为0
 		case 3:
 		{
-			TXData.InRxData[7]=GetData(SlaveAddress,GYRO_XOUT_H);
-			TXData.InRxData[8]=GetData(SlaveAddress,GYRO_YOUT_H);
-			TXData.InRxData[9]=GetData(SlaveAddress,GYRO_ZOUT_H);		//陀螺仪数据
+			TXData.InRxData[7]=GetData(ITG3050_Addr,GYRO_XOUT_H);
+			TXData.InRxData[8]=GetData(ITG3050_Addr,GYRO_YOUT_H);
+			TXData.InRxData[9]=GetData(ITG3050_Addr,GYRO_ZOUT_H);		//陀螺仪数据
 			break;
 		}
 		case 6:
 		{
-			TXData.InRxData[7]=GetData(SlaveAddress,GYRO_XOUT_H);
-			TXData.InRxData[8]=GetData(SlaveAddress,GYRO_YOUT_H);
-			TXData.InRxData[9]=GetData(SlaveAddress,GYRO_ZOUT_H);		//陀螺仪数据
+			TXData.InRxData[7]=GetData(ITG3050_Addr,GYRO_XOUT_H);
+			TXData.InRxData[8]=GetData(ITG3050_Addr,GYRO_YOUT_H);
+			TXData.InRxData[9]=GetData(ITG3050_Addr,GYRO_ZOUT_H);		//陀螺仪数据
 			
-			TXData.InRxData[10]=GetData(0xA6,ACCEL_XOUT_H);
-			TXData.InRxData[11]=GetData(0xA6,ACCEL_YOUT_H);
-			TXData.InRxData[12]=GetData(0xA6,ACCEL_ZOUT_H);					//加速度计数据
+			TXData.InRxData[10]=GetData(ADXL345_Addr,ACCEL_XOUT_H);
+			TXData.InRxData[11]=GetData(ADXL345_Addr,ACCEL_YOUT_H);
+			TXData.InRxData[12]=GetData(ADXL345_Addr,ACCEL_ZOUT_H);					//加速度计数据
 			break;
 		}
 		case 9:
 		{
-			TXData.InRxData[7]=GetData(SlaveAddress,GYRO_XOUT_H);
-			TXData.InRxData[8]=GetData(SlaveAddress,GYRO_YOUT_H);
-			TXData.InRxData[9]=GetData(SlaveAddress,GYRO_ZOUT_H);		//陀螺仪数据
+			TXData.InRxData[7]=GetData(ITG3050_Addr,GYRO_XOUT_H);
+			TXData.InRxData[8]=GetData(ITG3050_Addr,GYRO_YOUT_H);
+			TXData.InRxData[9]=GetData(ITG3050_Addr,GYRO_ZOUT_H);		//陀螺仪数据
 			
-			TXData.InRxData[10]=GetData(0xA6,ACCEL_XOUT_H);
-			TXData.InRxData[11]=GetData(0xA6,ACCEL_YOUT_H);
-			TXData.InRxData[12]=GetData(0xA6,ACCEL_ZOUT_H);					//加速度计数据
+			TXData.InRxData[10]=GetData(ADXL345_Addr,ACCEL_XOUT_H);
+			TXData.InRxData[11]=GetData(ADXL345_Addr,ACCEL_YOUT_H);
+			TXData.InRxData[12]=GetData(ADXL345_Addr,ACCEL_ZOUT_H);					//加速度计数据
 			
-			TXData.InRxData[13]=GetQMC5883Data(0x1A,0x00);
-			TXData.InRxData[14]=GetQMC5883Data(0x1A,0x02);
-			TXData.InRxData[15]=GetQMC5883Data(0x1A,0x04);					//磁力计数据
+			TXData.InRxData[13]=GetQMC5883Data(HMC5883L_Addr,GX_H);
+			TXData.InRxData[14]=GetQMC5883Data(HMC5883L_Addr,GY_H);
+			TXData.InRxData[15]=GetQMC5883Data(HMC5883L_Addr,GZ_H);					//磁力计数据
 			break;
 		}
 		default: break;
@@ -94,12 +93,8 @@ void SendData_To_Ros(void)
 		Cheksum+=TXData.InRxData[i];
 	}
 	TXData.InRxData[TXData.InRxData[1]-1]=Cheksum; //校验和
-	
-	for(i=0;i<TXData.InRxData[1]*4;i++)                         //循环发送数据
-  {
-      while(USART_GetFlagStatus(USART2,USART_FLAG_TC)==RESET); //循环发送,直到发送完毕   
-        USART_SendData(USART2,TXData.ChRxData[i]); 
-  } 
+	//DMA串口发送数据
+	USART2_DMA_TX(TXData.ChRxData,TXData.InRxData[1]*2);
 	
 }
 
@@ -108,7 +103,7 @@ void DealRXData(void)
 {
 	u8 i;
 	int ChekSum=0;
-	if(RXData.InRxData[0]==DATAHEAD && RXData.InRxData[1]==RXDATALENTH )//数据头和长度都对
+	if(RXData.InRxData[0]==(s16)DATAHEAD && RXData.InRxData[1]==(s16)RXDATALENTH )//数据头和长度都对
 	{
 		for(i=0;i<RXData.InRxData[1]-1;i++)
 		{

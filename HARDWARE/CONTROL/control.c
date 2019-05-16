@@ -54,6 +54,7 @@ void  RightWheelSpeedSet(int speed)
 /**************************************************************************
 函数功能：PID运动控制
 					10ms进一次
+					在系统的滴答定时器中调用
 **************************************************************************/
 PID_AbsoluteType PID_Control;//定义PID算法的结构体
 
@@ -61,18 +62,31 @@ PID_AbsoluteType PID_Control;//定义PID算法的结构体
 void RunWheelcontrol(void)
 {	
 	static u8 cnt=0;
+	float temp=0;
+	static float speed_usart=0;
 	cnt++;
+	
+	//停车标志 进入抱死状态
+	if(AllWheel.stop_flag)
+	{
+		TIM_SetCompare1(TIM8,TIM8_Period); 
+		TIM_SetCompare2(TIM8,TIM8_Period);
+		TIM_SetCompare3(TIM8,TIM8_Period); 
+		TIM_SetCompare4(TIM8,TIM8_Period); 
+		return;
+	}
+	
 	//获得PID调速后的PWM
 	LeftWheel.MotoPwm =myabs( LeftIncremental_PI(abs(GetEncoder.V5) ,LeftWheel.AimsEncoder ));//获得PID调速后的PWM
 	RightWheel.MotoPwm=myabs(RightIncremental_PI(abs(GetEncoder.V3) ,RightWheel.AimsEncoder));
-	
 	
 	Xianfu_Pwm();//限幅
 	
 	if(cnt%10==0)
 	{
-		u2_printf("PWM:	%d   Right:	%d	PWM:	%d  Left:	%d	aim:%d\r\n",RightWheel.MotoPwm,abs(GetEncoder.V3),LeftWheel.MotoPwm,abs(GetEncoder.V5),LeftWheel.AimsEncoder);
-		//u2_printf("@%d@",LeftEncoder_Cnt);
+		//u2_printf("PWM:	%d   Right:	%d	PWM:	%d  Left:	%d	aim:%d\r\n",RightWheel.MotoPwm,abs(GetEncoder.V3),LeftWheel.MotoPwm,abs(GetEncoder.V5),LeftWheel.AimsEncoder);
+		temp=GetEncoder.V3;
+		printf("@%d@",(int)(temp/0.11));
 	}
 	
 	//设置PWM与方向
