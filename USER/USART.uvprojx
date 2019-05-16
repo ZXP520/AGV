@@ -369,7 +369,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\HARDWARE\LED;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\STM32F10x_FWLib\inc;..\CORE;..\HARDWARE\KEY;..\HARDWARE\TIMER;..\HARDWARE\ADC;..\HARDWARE\PID;..\HARDWARE\RUNCONTROL;..\HARDWARE\MODBUS;..\HARDWARE\PS;..\HARDWARE\CONTROL;..\HARDWARE\MPU6050;..\HARDWARE\KALMAN;..\HARDWARE\DEALDATA;..\HARDWARE\ENCODER;..\HARDWARE\IIC;..\SYSTEM\usart</IncludePath>
+              <IncludePath>..\HARDWARE\LED;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\STM32F10x_FWLib\inc;..\CORE;..\HARDWARE\KEY;..\HARDWARE\TIMER;..\HARDWARE\ADC;..\HARDWARE\PID;..\HARDWARE\RUNCONTROL;..\HARDWARE\MODBUS;..\HARDWARE\PS;..\HARDWARE\CONTROL;..\HARDWARE\KALMAN;..\HARDWARE\DEALDATA;..\HARDWARE\ENCODER;..\HARDWARE\IIC;..\HARDWARE\GY85</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -448,16 +448,6 @@
               <FilePath>..\HARDWARE\CONTROL\control.c</FilePath>
             </File>
             <File>
-              <FileName>mpu6050.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\MPU6050\mpu6050.c</FilePath>
-            </File>
-            <File>
-              <FileName>kalman.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\KALMAN\kalman.c</FilePath>
-            </File>
-            <File>
               <FileName>dealdata.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\DEALDATA\dealdata.c</FilePath>
@@ -471,6 +461,11 @@
               <FileName>myiic.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\IIC\myiic.c</FilePath>
+            </File>
+            <File>
+              <FileName>gy85.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\GY85\gy85.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -13,8 +13,10 @@
 #include "Encoder.h"
 #include "bsp_usart.h"
 #include "usart.h"
-//ALIENTEK战舰STM32开发板实验4
-//串口实验  
+//版本定义
+//#define 
+
+
 
 //时间标志
 extern u32 Time_cnt;
@@ -92,8 +94,8 @@ int main(void)
 			}
 			if(time_cnt==5)
 			{
-				LeftWheelSpeedSet(200);
-				RightWheelSpeedSet(200);
+				LeftWheelSpeedSet(80);
+				RightWheelSpeedSet(80);
 				time_cnt=6;
 			}
 			Time_1000MS=Time_cnt;
