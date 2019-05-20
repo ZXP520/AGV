@@ -15,3 +15,6 @@
 ..\obj\timer.o: ..\HARDWARE\LED\led.h
 ..\obj\timer.o: ..\STM32F10x_FWLib\inc\stm32f10x_tim.h
 ..\obj\timer.o: ..\HARDWARE\CONTROL\control.h
+..\obj\timer.o: ..\HARDWARE\TIMER\include.h
+..\obj\timer.o: ..\HARDWARE\ADC\adc.h
+..\obj\timer.o: D:\keil5\ARM\ARMCC\Bin\..\include\stdio.h

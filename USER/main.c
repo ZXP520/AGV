@@ -5,7 +5,6 @@
 #include "led.h"
 #include "runcontrol.h"
 #include "control.h"
-
 #include "gy85.h"
 #include "kalman.h"
 #include "dealdata.h"
@@ -13,16 +12,10 @@
 #include "Encoder.h"
 #include "bsp_usart.h"
 #include "usart.h"
-//版本定义
-//#define 
-
 
 
 //时间标志
 extern u32 Time_cnt;
-Machine Mach;
-
-
 
 
 static void Stm32_Init(void)
@@ -33,10 +26,17 @@ static void Stm32_Init(void)
 	Time_Config();							//定时器初始化
 	InitGY85();                 //陀螺仪初始化
 
-	LeftWheelSpeedSet(0);
-	RightWheelSpeedSet(0);
-	//SetLeft_Pwm(400,0);
-	//SetRight_Pwm(400,1);
+	//LeftWheelSpeedSet(0);
+	//RightWheelSpeedSet(0);
+	//ThreeWheelSpeedSet(0);
+	//SetLeft_Pwm(300,0);
+	//SetRight_Pwm(300,0);
+	//SetThree_Pwm(300,0);
+	//LeftWheel.MotoPwm=1200;
+	//RightWheel.MotoPwm=1200;
+	//LeftWheelSpeedSet(-200);
+	//RightWheelSpeedSet(-200);
+	
 	
 }
  
@@ -77,7 +77,8 @@ int main(void)
 		
 		if(Time_cnt-Time_100MS>=100)
 		{
-		  
+		  printf("PWM:%d  Right:%d	PWM:%d  Left:%d	PWM:%d	Three:%d	aim:%d\r\n",RightWheel.MotoPwm,abs(GetEncoder.V3),LeftWheel.MotoPwm,abs(GetEncoder.V5),
+			ThreeWheel.MotoPwm,abs(GetEncoder.V4),LeftWheel.AimsEncoder);
 			Time_100MS=Time_cnt;
 		}
 		if(Time_cnt-Time_500MS>500)
@@ -94,8 +95,11 @@ int main(void)
 			}
 			if(time_cnt==5)
 			{
-				LeftWheelSpeedSet(80);
-				RightWheelSpeedSet(80);
+				
+				OmniWheelscontrol(100,0,0,0);
+				//LeftWheelSpeedSet(200);
+				//RightWheelSpeedSet(200);
+				//ThreeWheelSpeedSet(200);
 				time_cnt=6;
 			}
 			Time_1000MS=Time_cnt;

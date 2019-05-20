@@ -25,6 +25,7 @@
 #include "stm32f10x_it.h" 
 #include "control.h"
 #include "Encoder.h"
+#include "include.h"
  
 void NMI_Handler(void)
 {
@@ -86,7 +87,10 @@ void SysTick_Handler(void)
 		{
 			//PID控制应该放到中断中调速
 			Get_Encoder();
-			RunWheelcontrol();
+			//PID控制使能了
+			#if PID_ENABLE==1
+				RunWheelcontrol();
+			#endif
 		}
 }
 

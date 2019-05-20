@@ -115,10 +115,11 @@ void Get_Encoder_T5(void)
 
 void Get_Encoder(void)
 {
-//	Get_Encoder_T2();
+	//Get_Encoder_T2();
   Get_Encoder_T3();
-//  Get_Encoder_T4();
-  Get_Encoder_T5();
+	Get_Encoder_T5();
+  Get_Encoder_T4();
+  
 }
 
 

@@ -14,3 +14,7 @@
 ..\obj\stm32f10x_it.o: ..\HARDWARE\CONTROL\control.h
 ..\obj\stm32f10x_it.o: ..\SYSTEM\sys\sys.h
 ..\obj\stm32f10x_it.o: ..\HARDWARE\ENCODER\Encoder.h
+..\obj\stm32f10x_it.o: ..\HARDWARE\TIMER\include.h
+..\obj\stm32f10x_it.o: ..\STM32F10x_FWLib\inc\stm32f10x_tim.h
+..\obj\stm32f10x_it.o: ..\HARDWARE\ADC\adc.h
+..\obj\stm32f10x_it.o: D:\keil5\ARM\ARMCC\Bin\..\include\stdio.h

@@ -16,7 +16,7 @@
 
 typedef struct
 {
-  int 	Direct;			//方向
+  _Bool 	Direct;			//方向
   int 	AimsEncoder;//目标脉冲数
 	int 	MotoPwm;		//轮子PWM
 	int   speed;			//轮子速度
@@ -52,17 +52,23 @@ typedef struct
 void PID_AbsoluteMode(PID_AbsoluteType* PID);
 
 
-extern Wheel LeftWheel,RightWheel,AllWheel;//定义左右轮结构体
+extern Wheel LeftWheel,RightWheel,ThreeWheel,AllWheel;//定义左右轮结构体
 
 void RunWheelcontrol(void);
 void SetLeft_Pwm(int moto,u8 mode);
 void SetRight_Pwm(int moto,u8 mode);
+void SetThree_Pwm(int moto,u8 mode);
 void Xianfu_Pwm(void);
 int myabs(int a);
 int LeftIncremental_PI (int Encoder,int Target);
 int RightIncremental_PI (int Encoder,int Target);
+int ThreeIncremental_PI (int Encoder,int Target);
 //左轮速度设置
 void LeftWheelSpeedSet(int speed);
 //右轮速度设置
 void  RightWheelSpeedSet(int speed);
+//三轮速度设置
+void  ThreeWheelSpeedSet(int speed);
+//三轮全向轮运动控制
+void OmniWheelscontrol(u8 Vx,u8 Vy,u8 W,u8 a);
 #endif

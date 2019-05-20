@@ -4,6 +4,7 @@
 #include "led.h"
 #include "timer.h"
 #include "usart.h"
+#include <math.h>
 #include "Encoder.h"
 /**************************************************************************
 函数功能：轮子速度设置 mm/s
@@ -11,7 +12,7 @@
 					speed     （速度mm/s）34mm/s-376mm/s  精度为34mm/s
 	
 **************************************************************************/
-Wheel LeftWheel,RightWheel,AllWheel;//定义左右轮结构体
+Wheel LeftWheel,RightWheel,ThreeWheel,AllWheel;//定义左右轮结构体
 
 
 //左轮速度设置
@@ -50,6 +51,23 @@ void  RightWheelSpeedSet(int speed)
 	RightWheel.AimsEncoder=speed*SPEED_TO_ENCODER+0.5;//+0.5四舍五入
 }
 
+//三轮速度设置
+void  ThreeWheelSpeedSet(int speed)
+{
+	if(speed>=0)//正方向
+	{
+		if(speed>MAXSPEED){speed=MAXSPEED;}//限速
+		ThreeWheel.Direct=1;
+	}
+	else        //反方向
+	{
+		speed=-speed;
+		if(speed>MAXSPEED){speed=MAXSPEED;}//限速
+		ThreeWheel.Direct=0;
+	}
+	ThreeWheel.AimsEncoder=speed*SPEED_TO_ENCODER+0.5;//+0.5四舍五入
+}
+
 
 /**************************************************************************
 函数功能：PID运动控制
@@ -61,37 +79,37 @@ PID_AbsoluteType PID_Control;//定义PID算法的结构体
 
 void RunWheelcontrol(void)
 {	
-	static u8 cnt=0;
 	float temp=0;
-	static float speed_usart=0;
-	cnt++;
 	
 	//停车标志 进入抱死状态
 	if(AllWheel.stop_flag)
 	{
-		TIM_SetCompare1(TIM8,TIM8_Period); 
-		TIM_SetCompare2(TIM8,TIM8_Period);
-		TIM_SetCompare3(TIM8,TIM8_Period); 
-		TIM_SetCompare4(TIM8,TIM8_Period); 
+		TIM_SetCompare1(TIM8,0); 
+		TIM_SetCompare2(TIM8,0);
+		TIM_SetCompare3(TIM8,0); 
+		TIM_SetCompare4(TIM8,0); 
 		return;
 	}
 	
 	//获得PID调速后的PWM
+#if VERSION==1
+	LeftWheel.MotoPwm =myabs( LeftIncremental_PI(abs(GetEncoder.V3) ,LeftWheel.AimsEncoder ));//获得PID调速后的PWM
+	RightWheel.MotoPwm=myabs(RightIncremental_PI(abs(GetEncoder.V4) ,RightWheel.AimsEncoder));
+	ThreeWheel.MotoPwm=myabs(ThreeIncremental_PI(abs(GetEncoder.V5) ,ThreeWheel.AimsEncoder));
+#else
 	LeftWheel.MotoPwm =myabs( LeftIncremental_PI(abs(GetEncoder.V5) ,LeftWheel.AimsEncoder ));//获得PID调速后的PWM
 	RightWheel.MotoPwm=myabs(RightIncremental_PI(abs(GetEncoder.V3) ,RightWheel.AimsEncoder));
+#endif
+	
+	
 	
 	Xianfu_Pwm();//限幅
 	
-	if(cnt%10==0)
-	{
-		//u2_printf("PWM:	%d   Right:	%d	PWM:	%d  Left:	%d	aim:%d\r\n",RightWheel.MotoPwm,abs(GetEncoder.V3),LeftWheel.MotoPwm,abs(GetEncoder.V5),LeftWheel.AimsEncoder);
-		temp=GetEncoder.V3;
-		printf("@%d@",(int)(temp/0.11));
-	}
 	
 	//设置PWM与方向
 	SetLeft_Pwm (LeftWheel.MotoPwm  ,LeftWheel.Direct );
 	SetRight_Pwm(RightWheel.MotoPwm ,RightWheel.Direct);
+	SetThree_Pwm(ThreeWheel.MotoPwm ,ThreeWheel.Direct);
 	
 }
 
@@ -105,13 +123,15 @@ void SetLeft_Pwm(int moto,u8 mode)
 {
 	if(mode)
 	{
-		TIM_SetCompare1(TIM8,moto); 
-		TIM_SetCompare2(TIM8,0); 
+		TIM_SetCompare1(TIM8,TIM8_Period-moto); 
+		TIM_SetCompare2(TIM8,TIM8_Period); 
+		
 	}
 	else
 	{
-		TIM_SetCompare1(TIM8,0); 
-		TIM_SetCompare2(TIM8,moto); 
+		TIM_SetCompare1(TIM8,TIM8_Period); 
+		TIM_SetCompare2(TIM8,TIM8_Period-moto); 
+		
 	}
 }
 
@@ -119,13 +139,31 @@ void SetRight_Pwm(int moto,u8 mode)
 {
 	if(mode)
 	{
-		TIM_SetCompare3(TIM8,0); 
-		TIM_SetCompare4(TIM8,moto); 
+		TIM_SetCompare3(TIM8,TIM8_Period); 
+		TIM_SetCompare4(TIM8,TIM8_Period-moto); 
+		
+		
 	}
 	else
 	{	
-		TIM_SetCompare3(TIM8,moto); 
-		TIM_SetCompare4(TIM8,0); 
+		TIM_SetCompare3(TIM8,TIM8_Period-moto); 
+		TIM_SetCompare4(TIM8,TIM8_Period); 
+	}
+}
+
+
+void SetThree_Pwm(int moto,u8 mode)
+{
+	if(mode)
+	{
+		TIM_SetCompare1(TIM1,TIM8_Period); 
+		TIM_SetCompare2(TIM1,TIM8_Period-moto); 
+		
+	}
+	else
+	{	
+		TIM_SetCompare1(TIM1,TIM8_Period-moto); 
+		TIM_SetCompare2(TIM1,TIM8_Period); 
 	}
 }
 
@@ -145,6 +183,9 @@ void Xianfu_Pwm(void)
 
 		if(RightWheel.MotoPwm<-TIM8_Period) RightWheel.MotoPwm=-TIM8_Period;	
 		if(RightWheel.MotoPwm>TIM8_Period)  RightWheel.MotoPwm=TIM8_Period;	
+	
+		if(ThreeWheel.MotoPwm<-TIM8_Period) ThreeWheel.MotoPwm=-TIM8_Period;	
+		if(ThreeWheel.MotoPwm>TIM8_Period)  ThreeWheel.MotoPwm=TIM8_Period;	
 }
 
 /**************************************************************************
@@ -179,7 +220,7 @@ pwm代表增量输出
 pwm+=Kp[e（k）-e(k-1)]+Ki*e(k)
 **************************************************************************/
 //左PID
-float LVelocity_KP=120,LVelocity_KI=5;
+float LVelocity_KP=27,LVelocity_KI=3;
 
 int LeftIncremental_PI (int Encoder,int Target)
 { 	
@@ -194,13 +235,27 @@ int LeftIncremental_PI (int Encoder,int Target)
 }
 
 //右PID
-float RVelocity_KP=120,RVelocity_KI=5;
+float RVelocity_KP=27,RVelocity_KI=3;
 
 int RightIncremental_PI (int Encoder,int Target)
 { 	
 	 static float Bias=0,Pwm=0,Last_bias=0;
 	 Bias=Target-Encoder;                                  //计算偏差
 	 Pwm+=RVelocity_KP*(Bias-Last_bias)+RVelocity_KI*Bias;   //增量式PI控制器
+	 if(Pwm>1200){Pwm=1200;}
+	 else if(Pwm<0){Pwm=0;}
+	 Last_bias=Bias;	                                     //保存上一次偏差 
+	 return Pwm;                                           //增量输出
+}
+
+//三PID
+float TVelocity_KP=120,TVelocity_KI=5;
+
+int ThreeIncremental_PI (int Encoder,int Target)
+{ 	
+	 static float Bias=0,Pwm=0,Last_bias=0;
+	 Bias=Target-Encoder;                                  //计算偏差
+	 Pwm+=TVelocity_KP*(Bias-Last_bias)+TVelocity_KI*Bias;   //增量式PI控制器
 	 if(Pwm>1200){Pwm=1200;}
 	 else if(Pwm<0){Pwm=0;}
 	 Last_bias=Bias;	                                     //保存上一次偏差 
@@ -254,3 +309,53 @@ void PID_AbsoluteMode(PID_AbsoluteType* PID)
  PID->ctrOut = PID->kp * PID->errP + PID->ki * PID->errI + PID->kd * PID->errD;//计算绝对式PID输出
 
 }
+
+
+
+//全向轮运动控制
+/*
+		Va     					cos@									sin@					L					Vx
+		Vb  =	 -cos60cos@+sin60sin@		-cos60sin@-sin60cos@	L			*		Vy
+		Vc		 -sin30cos@+cos30sin@		-sin30sin@+cos30cos@	L					 W
+
+		其中@为小车坐标系与世界坐标系的夹角    
+		W为小车自身的角速度
+		Vx为X轴速度
+		Vy为Y轴速度
+
+		Va为a轮子速度
+		Vb为b轮子速度
+		Vc为c轮子速度
+		L为轮子到中心的距离
+    顺时针为正
+*/
+#define  L 145 //轮子到中心的距离
+void OmniWheelscontrol(u8 Vx,u8 Vy,u8 W,u8 a)
+{
+	static double Va,Vb,Vc;
+	
+	Va=Vx*cos(a)+Vy*sin(a)+W*L;
+	Vb=Vx*(-cos(PI/3)*cos(a)+sin(PI/6)*sin(a))+Vy*(-cos(PI/3)*sin(a)-sin(PI/3)*cos(a))+W*L;
+	Vc=Vx*(-sin(PI/6)*cos(a)+cos(PI/6)*sin(a))+Vy*(-sin(PI/6)*sin(a)+cos(PI/6)*cos(a))+W*L;
+	
+	LeftWheelSpeedSet ( Va);
+	RightWheelSpeedSet(-Vb);
+	ThreeWheelSpeedSet(-Vc);
+	
+	//逆时针转动
+	//LeftWheelSpeedSet(-200);
+	//RightWheelSpeedSet(200);
+	//ThreeWheelSpeedSet(200);
+}
+
+
+
+
+
+
+
+
+
+
+
+
