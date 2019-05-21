@@ -329,7 +329,7 @@ void PID_AbsoluteMode(PID_AbsoluteType* PID)
 		L为轮子到中心的距离
     顺时针为正
 */
-#define  L 145 //轮子到中心的距离
+#define  L 157 //轮子到中心的距离
 void OmniWheelscontrol(u8 Vx,u8 Vy,u8 W,u8 a)
 {
 	static double Va,Vb,Vc;

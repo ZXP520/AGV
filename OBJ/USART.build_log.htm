@@ -27,7 +27,23 @@ Project File Date:  05/17/2019
 <h2>Output:</h2>
 *** Using Compiler 'V5.05 update 1 (build 106)', folder: 'D:\keil5\ARM\ARMCC\Bin'
 Build target 'Target 1'
-"..\OBJ\USART.axf" - 0 Error(s), 0 Warning(s).
+compiling main.c...
+main.c(80): warning:  #223-D: function "abs" declared implicitly
+                  printf("PWM:%d  Right:%d      PWM:%d  Left:%d PWM:%d  Three:%d        aim:%d\r\n",RightWheel.MotoPwm,abs(GetEncoder.V3),LeftWheel.MotoPwm,abs(GetEncoder.V5),
+main.c: 1 warning, 0 errors
+compiling stm32f10x_it.c...
+compiling timer.c...
+compiling control.c...
+..\HARDWARE\CONTROL\control.c(96): warning:  #223-D: function "abs" declared implicitly
+        LeftWheel.MotoPwm =myabs( LeftIncremental_PI(abs(GetEncoder.V3) ,LeftWheel.AimsEncoder ));//获得PID调速后的PWM
+..\HARDWARE\CONTROL\control.c(82): warning:  #177-D: variable "temp" was declared but never referenced
+        float temp=0;
+..\HARDWARE\CONTROL\control.c: 2 warnings, 0 errors
+compiling dealdata.c...
+linking...
+Program Size: Code=22056 RO-data=624 RW-data=220 ZI-data=2596  
+FromELF: creating hex file...
+"..\OBJ\USART.axf" - 0 Error(s), 3 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   D:\项目\ROS全向轮小车\car\USER\RTE
