@@ -111,8 +111,12 @@ void DealRXData(void)
 		}
 		if(ChekSum == RXData.InRxData[7])//数据校验正确
 		{
+			#if		 VERSION==0  //差速
 			RightWheelSpeedSet(RXData.InRxData[2]);//设置右轮速度
 			LeftWheelSpeedSet	(RXData.InRxData[3]);//设置左轮速度
+			#elif  VERSION==1  //全向
+			OmniWheelscontrol(RXData.InRxData[3],RXData.InRxData[2],0,0);
+			#endif
 			AllWheel.stop_flag			=RXData.InRxData[4];//停车标志
 			AllWheel.navigation_flag=RXData.InRxData[5];//导航标志
 			AllWheel.imu_num				=RXData.InRxData[6];//陀螺仪数据轴数

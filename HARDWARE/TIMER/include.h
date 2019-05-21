@@ -5,6 +5,7 @@
 #include "adc.h"
 #include "stdio.h"
 
+//版本  0-差速，1-全向，2-四轮；
 //版本定义
 #define  VERSION     1
 //PID控制使能

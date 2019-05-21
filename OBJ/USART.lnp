@@ -1,5 +1,4 @@
 --cpu Cortex-M3
-"..\obj\main.o"
 "..\obj\stm32f10x_it.o"
 "..\obj\system_stm32f10x.o"
 "..\obj\timer.o"
@@ -9,7 +8,6 @@
 "..\obj\encoder.o"
 "..\obj\myiic.o"
 "..\obj\gy85.o"
-"..\obj\delay.o"
 "..\obj\sys.o"
 "..\obj\bsp_usart.o"
 "..\obj\usart.o"
@@ -22,6 +20,9 @@
 "..\obj\stm32f10x_tim.o"
 "..\obj\stm32f10x_adc.o"
 "..\obj\stm32f10x_dma.o"
+"..\obj\fsc_stos.o"
+"..\FSC_STOS\FSC_STOS.lib"
+"..\obj\main_1.o"
 --strict --scatter "..\OBJ\USART.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

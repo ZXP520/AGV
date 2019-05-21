@@ -369,7 +369,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\HARDWARE\LED;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\STM32F10x_FWLib\inc;..\CORE;..\HARDWARE\KEY;..\HARDWARE\TIMER;..\HARDWARE\ADC;..\HARDWARE\PID;..\HARDWARE\RUNCONTROL;..\HARDWARE\MODBUS;..\HARDWARE\PS;..\HARDWARE\CONTROL;..\HARDWARE\KALMAN;..\HARDWARE\DEALDATA;..\HARDWARE\ENCODER;..\HARDWARE\IIC;..\HARDWARE\GY85</IncludePath>
+              <IncludePath>..\HARDWARE\LED;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\STM32F10x_FWLib\inc;..\CORE;..\HARDWARE\KEY;..\HARDWARE\TIMER;..\HARDWARE\ADC;..\HARDWARE\PID;..\HARDWARE\RUNCONTROL;..\HARDWARE\MODBUS;..\HARDWARE\PS;..\HARDWARE\CONTROL;..\HARDWARE\KALMAN;..\HARDWARE\DEALDATA;..\HARDWARE\ENCODER;..\HARDWARE\IIC;..\HARDWARE\GY85;..\FSC_STOS</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -412,11 +412,6 @@
         <Group>
           <GroupName>USER</GroupName>
           <Files>
-            <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\main.c</FilePath>
-            </File>
             <File>
               <FileName>stm32f10x_it.c</FileName>
               <FileType>1</FileType>
@@ -477,11 +472,6 @@
         <Group>
           <GroupName>SYSTEM</GroupName>
           <Files>
-            <File>
-              <FileName>delay.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\SYSTEM\delay\delay.c</FilePath>
-            </File>
             <File>
               <FileName>sys.c</FileName>
               <FileType>1</FileType>
@@ -551,6 +541,31 @@
               <FileName>stm32f10x_dma.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\STM32F10x_FWLib\src\stm32f10x_dma.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>FSC_STOS</GroupName>
+          <Files>
+            <File>
+              <FileName>FSC_STOS.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FSC_STOS\FSC_STOS.c</FilePath>
+            </File>
+            <File>
+              <FileName>FSC_STOS.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\FSC_STOS\FSC_STOS.h</FilePath>
+            </File>
+            <File>
+              <FileName>FSC_STOS.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\FSC_STOS\FSC_STOS.lib</FilePath>
+            </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FSC_STOS\main.c</FilePath>
             </File>
           </Files>
         </Group>
