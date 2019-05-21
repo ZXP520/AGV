@@ -1414,29 +1414,29 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-       564         24          0          0        600      12637   bsp_usart.o
-      2552        208          0        136        120       6451   control.o
+       564         24          0          0        600      12545   bsp_usart.o
+      2552        208          0        136        120       6383   control.o
          0          0          0          0          0         32   core_cm3.o
-       608         22          0          0          0       1153   dealdata.o
-       672         22          0          0         40       2143   encoder.o
-       204          0          0          0          0       1010   gy85.o
-       444        116          0         29          0     253447   main.o
-       220         22          0          0          0       1753   misc.o
-       924          8          0          0          0       2958   myiic.o
-        64         26        304          0       1536        772   startup_stm32f10x_hd.o
-       596          8          0          0          0       4278   stm32f10x_dma.o
-       860         38          0          0          0       5597   stm32f10x_gpio.o
-        68          6          0          4          0     204493   stm32f10x_it.o
-       932         36          0         20          0       8740   stm32f10x_rcc.o
-      3610         88          0          0          0      22080   stm32f10x_tim.o
-      1032         22          0          0          0       8320   stm32f10x_usart.o
-        12          0          0          0          0        425   sys.o
-       480         38          0         20          0       1667   system_stm32f10x.o
-      1132         44          0          0          0      17618   timer.o
-       328         18          0          6        200       3074   usart.o
+       608         22          0          0          0       1133   dealdata.o
+       672         22          0          0         40       2083   encoder.o
+       204          0          0          0          0        990   gy85.o
+       444        116          0         29          0     253315   main.o
+       220         22          0          0          0       1713   misc.o
+       924          8          0          0          0       2942   myiic.o
+        64         26        304          0       1536        756   startup_stm32f10x_hd.o
+       596          8          0          0          0       4242   stm32f10x_dma.o
+       860         38          0          0          0       5557   stm32f10x_gpio.o
+        68          6          0          4          0     204437   stm32f10x_it.o
+       932         36          0         20          0       8684   stm32f10x_rcc.o
+      3610         88          0          0          0      22040   stm32f10x_tim.o
+      1032         22          0          0          0       8284   stm32f10x_usart.o
+        12          0          0          0          0        409   sys.o
+       480         38          0         20          0       1611   system_stm32f10x.o
+      1132         44          0          0          0      17578   timer.o
+       328         18          0          6        200       3018   usart.o
 
     ----------------------------------------------------------------------
-     15304        746        336        220       2496     558648   Object Totals
+     15304        746        336        220       2496     557752   Object Totals
          0          0         32          0          0          0   (incl. Generated)
          2          0          0          5          0          0   (incl. Padding)
 
@@ -1530,8 +1530,8 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     22056       1134        624        220       2596     559224   Grand Totals
-     22056       1134        624        220       2596     559224   ELF Image Totals
+     22056       1134        624        220       2596     558328   Grand Totals
+     22056       1134        624        220       2596     558328   ELF Image Totals
      22056       1134        624        220          0          0   ROM Totals
 
 ==============================================================================
