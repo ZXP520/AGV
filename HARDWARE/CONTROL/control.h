@@ -70,5 +70,5 @@ void  RightWheelSpeedSet(int speed);
 //三轮速度设置
 void  ThreeWheelSpeedSet(int speed);
 //三轮全向轮运动控制
-void OmniWheelscontrol(u8 Vx,u8 Vy,u8 W,u8 a);
+void OmniWheelscontrol(s16 Vx,s16 Vy,s16 W,s16 a);
 #endif

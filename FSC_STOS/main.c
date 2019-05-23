@@ -69,14 +69,15 @@ int main(void)
 	  //全局初使化,推荐把所有任务都使用到的初使化放在此处，task独立用到的初使化放在task内
     /************************************************************************************/	
 	  /*------------------全局初使化区-------------------*/
-	  //USART1_Config(9600); //串口1初使化,用户使用实际工程的串口1初使化函数替换
 	  NVIC_Configuration(); 	 		
 	  uart_init(115200);				  
 	  USART2_Config(115200);			
 	  Time_Config();							
 	  InitGY85(); 
-	
-		OmniWheelscontrol(0,200,0,0);
+	  
+	  //RightWheelSpeedSet(200);//??????
+		//LeftWheelSpeedSet	(200);//??????
+		//OmniWheelscontrol(0,200,0,0);
 	
 	
 	  /************************************************************************************/	
@@ -94,57 +95,53 @@ int main(void)
 /*把void taskX(void)看成普通的int main(void)使用即可,这里相当于多个main()在轮流运行*/
 
 /****************************************用户全局变量及宏定义区*****************************************/
-//#define OSTimer_LED0  0  //第0个系统虚拟定时器用作LED0的定时    //示例代码，使用时删除
-
-
-
 
 /*******************************************************************************************************/
 /*********************************用户任务实体代码区************************************/
-void Task1(void)  //任务1 串口2发送数据给ROS
+void Task1(void)  //任务1  得到编码器数据 
 { 	
 	while(1) 
 	 {
-		 SendData_To_Ros();
-		 //TestSendData_To_Ros();
-  	 OS_delayMs(20);			//示例代码，使用时删除		 
-	 }	
-}
-
-void Task2(void) //任务2  打印数据
-{
-	while(1) 
-	 {
-		 printf("PWM:%d  Right:%d	PWM:%d  Left:%d	PWM:%d	Three:%d	aim:%d\r\n",RightWheel.MotoPwm,abs(GetEncoder.V3),LeftWheel.MotoPwm,abs(GetEncoder.V5),
-		 ThreeWheel.MotoPwm,abs(GetEncoder.V4),LeftWheel.AimsEncoder);		 
-  	 OS_delayMs(100);			//示例代码，使用时删除		 
-	 }			
-}
-
-void Task3(void) //任务3  得到编码器数据
-{	
-	while(1) 
-	 {	 
 		 //PID控制应该放到中断中调速
 		 Get_Encoder();
   	 OS_delayMs(10);			//示例代码，使用时删除		 
+	 }	
+}
+
+void Task2(void) //任务2   PID调速
+{
+	while(1) 
+	 {
+		 //PID控制使能了
+			#if PID_ENABLE==1
+			RunWheelcontrol();
+			#endif	  
+  	  OS_delayMs(10);			//示例代码，使用时删除		 
 	 }			
 }
 
-void Task4(void) //任务4  PID调速
+void Task3(void) //任务3 串口2发送数据给ROS
+{	
+	while(1) 
+	 {	 
+		 //SendData_To_Ros();
+		 //TestSendData_To_Ros();
+  	 OS_delayMs(20);			//示例代码，使用时删除		 
+	 }			
+}
+
+void Task4(void) //任务4  打印数据
 {
 	while(1) 
 	 {		
       
-			//PID控制使能了
-			#if PID_ENABLE==1
-				RunWheelcontrol();
-			#endif
-  		OS_delayMs(10); 			//示例代码，使用时删除		
+			printf("PWM:%d  Right:%d	PWM:%d  Left:%d	PWM:%d	Three:%d	aim:%d\r\n",RightWheel.MotoPwm,abs(GetEncoder.V3),LeftWheel.MotoPwm,abs(GetEncoder.V5),
+		  ThreeWheel.MotoPwm,abs(GetEncoder.V4),LeftWheel.AimsEncoder);
+  		OS_delayMs(1000); 			//示例代码，使用时删除		
 	 }
 }
 
-void Task5(void) //任务5   
+void Task5(void) //任务5   暂时未使用
 {
 	while(1) 
 	 {	

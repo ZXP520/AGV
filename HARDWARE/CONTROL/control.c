@@ -88,6 +88,9 @@ void RunWheelcontrol(void)
 		TIM_SetCompare2(TIM8,0);
 		TIM_SetCompare3(TIM8,0); 
 		TIM_SetCompare4(TIM8,0); 
+		
+		TIM_SetCompare1(TIM1,0); 
+		TIM_SetCompare2(TIM1,0); 
 		return;
 	}
 	
@@ -220,7 +223,7 @@ pwm代表增量输出
 pwm+=Kp[e（k）-e(k-1)]+Ki*e(k)
 **************************************************************************/
 //左PID
-float LVelocity_KP=27,LVelocity_KI=3;
+float LVelocity_KP=120,LVelocity_KI=3;
 
 int LeftIncremental_PI (int Encoder,int Target)
 { 	
@@ -235,7 +238,7 @@ int LeftIncremental_PI (int Encoder,int Target)
 }
 
 //右PID
-float RVelocity_KP=27,RVelocity_KI=3;
+float RVelocity_KP=120,RVelocity_KI=3;
 
 int RightIncremental_PI (int Encoder,int Target)
 { 	
@@ -249,7 +252,7 @@ int RightIncremental_PI (int Encoder,int Target)
 }
 
 //三PID
-float TVelocity_KP=120,TVelocity_KI=5;
+float TVelocity_KP=120,TVelocity_KI=3;
 
 int ThreeIncremental_PI (int Encoder,int Target)
 { 	
@@ -330,7 +333,7 @@ void PID_AbsoluteMode(PID_AbsoluteType* PID)
     顺时针为正
 */
 #define  L 157 //轮子到中心的距离
-void OmniWheelscontrol(u8 Vx,u8 Vy,u8 W,u8 a)
+void OmniWheelscontrol(s16 Vx,s16 Vy,s16 W,s16 a)
 {
 	static double Va,Vb,Vc;
 	

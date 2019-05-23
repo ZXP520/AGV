@@ -7,6 +7,7 @@
 #include "gy85.h"
 #include "Encoder.h"
 #include "bsp_usart.h"
+#include "include.h"
 
 //数据测试函数
 void TestSendData_To_Ros(void)
@@ -15,12 +16,14 @@ void TestSendData_To_Ros(void)
 	u8 i=0;
 	
 	TXData.InRxData[0]=DATAHEAD;  //头
-	TXData.InRxData[1]=8;				//包长度	
-	TXData.InRxData[2]=100;			//左轮速度
-	TXData.InRxData[3]=100;		//右轮速度
-	TXData.InRxData[4]=0;				//停车信号
-	TXData.InRxData[5]=0;				//导航标志
-	TXData.InRxData[6]=3;				//陀螺仪轴数
+	TXData.InRxData[1]=10;				//包长度	
+	TXData.InRxData[2]=100;			  //左轮速度
+	TXData.InRxData[3]=100;		    //右轮速度
+	TXData.InRxData[4]=0;			    //前左轮
+	TXData.InRxData[5]=0;		      //前右轮
+	TXData.InRxData[6]=0;				  //停车信号
+	TXData.InRxData[7]=0;				  //导航标志
+	TXData.InRxData[8]=3;				  //陀螺仪轴数
 	for(i=0;i<TXData.InRxData[1]-1;i++)
 	{
 		Cheksum+=TXData.InRxData[i];
@@ -55,14 +58,14 @@ void SendData_To_Ros(void)
 		{
 			TXData.InRxData[7]=GetData(ITG3050_Addr,GYRO_XOUT_H);
 			TXData.InRxData[8]=GetData(ITG3050_Addr,GYRO_YOUT_H);
-			TXData.InRxData[9]=GetData(ITG3050_Addr,GYRO_ZOUT_H);		//陀螺仪数据
+			TXData.InRxData[9]=GetData(ITG3050_Addr,GYRO_ZOUT_H);						//陀螺仪数据
 			break;
 		}
 		case 6:
 		{
 			TXData.InRxData[7]=GetData(ITG3050_Addr,GYRO_XOUT_H);
 			TXData.InRxData[8]=GetData(ITG3050_Addr,GYRO_YOUT_H);
-			TXData.InRxData[9]=GetData(ITG3050_Addr,GYRO_ZOUT_H);		//陀螺仪数据
+			TXData.InRxData[9]=GetData(ITG3050_Addr,GYRO_ZOUT_H);						//陀螺仪数据
 			
 			TXData.InRxData[10]=GetData(ADXL345_Addr,ACCEL_XOUT_H);
 			TXData.InRxData[11]=GetData(ADXL345_Addr,ACCEL_YOUT_H);
@@ -73,7 +76,7 @@ void SendData_To_Ros(void)
 		{
 			TXData.InRxData[7]=GetData(ITG3050_Addr,GYRO_XOUT_H);
 			TXData.InRxData[8]=GetData(ITG3050_Addr,GYRO_YOUT_H);
-			TXData.InRxData[9]=GetData(ITG3050_Addr,GYRO_ZOUT_H);		//陀螺仪数据
+			TXData.InRxData[9]=GetData(ITG3050_Addr,GYRO_ZOUT_H);						//陀螺仪数据
 			
 			TXData.InRxData[10]=GetData(ADXL345_Addr,ACCEL_XOUT_H);
 			TXData.InRxData[11]=GetData(ADXL345_Addr,ACCEL_YOUT_H);
@@ -103,23 +106,34 @@ void DealRXData(void)
 {
 	u8 i;
 	int ChekSum=0;
-	if(RXData.InRxData[0]==(s16)DATAHEAD && RXData.InRxData[1]==(s16)RXDATALENTH )//数据头和长度都对
+	if(RXData.InRxData[0]==(s16)DATAHEAD && RXData.ChRxData[2]==(u8)RXDATALENTH*2 )//数据头和长度都对
 	{
-		for(i=0;i<RXData.InRxData[1]-1;i++)
+		for(i=0;i<RXData.ChRxData[2]/2-1;i++)
 		{
 			ChekSum+=RXData.InRxData[i];
 		}
-		if(ChekSum == RXData.InRxData[7])//数据校验正确
+		if(ChekSum == RXData.InRxData[RXDATALENTH-1])//数据校验正确
 		{
-			#if		 VERSION==0  //差速
-			RightWheelSpeedSet(RXData.InRxData[2]);//设置右轮速度
-			LeftWheelSpeedSet	(RXData.InRxData[3]);//设置左轮速度
-			#elif  VERSION==1  //全向
-			OmniWheelscontrol(RXData.InRxData[3],RXData.InRxData[2],0,0);
-			#endif
-			AllWheel.stop_flag			=RXData.InRxData[4];//停车标志
-			AllWheel.navigation_flag=RXData.InRxData[5];//导航标志
-			AllWheel.imu_num				=RXData.InRxData[6];//陀螺仪数据轴数
+			switch(RXData.ChRxData[4])//命令解析
+			{
+				case 0x00:break;
+				case 0x01:break;
+				case 0x02:    //差速两轮
+				{
+					LeftWheelSpeedSet	(RXData.InRxData[3]);//设置左轮速度
+					RightWheelSpeedSet(RXData.InRxData[4]);//设置右轮速度
+					break;
+				}
+				case 0x03:		//全向三轮
+				{
+					OmniWheelscontrol(RXData.InRxData[3],RXData.InRxData[4],RXData.InRxData[5],RXData.InRxData[6]);
+					break;
+				}
+			}
+			
+			AllWheel.stop_flag			=RXData.ChRxData[15];//停车标志
+			AllWheel.navigation_flag=RXData.ChRxData[16];//导航标志
+			AllWheel.imu_num				=RXData.InRxData[8]; //陀螺仪数据轴数
 		}
 	}
 }
