@@ -85,8 +85,8 @@ I (..\HARDWARE\TIMER\timer.h)(0x5CD9339C)
 I (..\SYSTEM\usart\usart.h)(0x5CDCC5DD)
 I (D:\keil5\ARM\ARMCC\include\math.h)(0x5475F2FE)
 I (..\HARDWARE\ENCODER\Encoder.h)(0x5CC6736C)
-F (..\HARDWARE\DEALDATA\dealdata.c)(0x5CE77E2E)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I..\HARDWARE\LED -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\SYSTEM\usart -I..\USER -I..\STM32F10x_FWLib\inc -I..\CORE -I..\HARDWARE\KEY -I..\HARDWARE\TIMER -I..\HARDWARE\ADC -I..\HARDWARE\PID -I..\HARDWARE\RUNCONTROL -I..\HARDWARE\MODBUS -I..\HARDWARE\PS -I..\HARDWARE\CONTROL -I..\HARDWARE\KALMAN -I..\HARDWARE\DEALDATA -I..\HARDWARE\ENCODER -I..\HARDWARE\IIC -I..\HARDWARE\GY85 -I..\FSC_STOS-I D:\项目\ROS全向轮小车\car\USER\RTE-I D:\keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\keil5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\dealdata.o --omf_browse ..\obj\dealdata.crf --depend ..\obj\dealdata.d)
-I (..\HARDWARE\DEALDATA\dealdata.h)(0x5CE75C5A)
+F (..\HARDWARE\DEALDATA\dealdata.c)(0x5CE7C0DF)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I..\HARDWARE\LED -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\SYSTEM\usart -I..\USER -I..\STM32F10x_FWLib\inc -I..\CORE -I..\HARDWARE\KEY -I..\HARDWARE\TIMER -I..\HARDWARE\ADC -I..\HARDWARE\PID -I..\HARDWARE\RUNCONTROL -I..\HARDWARE\MODBUS -I..\HARDWARE\PS -I..\HARDWARE\CONTROL -I..\HARDWARE\KALMAN -I..\HARDWARE\DEALDATA -I..\HARDWARE\ENCODER -I..\HARDWARE\IIC -I..\HARDWARE\GY85 -I..\FSC_STOS-I D:\项目\ROS全向轮小车\car\USER\RTE-I D:\keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\keil5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\dealdata.o --omf_browse ..\obj\dealdata.crf --depend ..\obj\dealdata.d)
+I (..\HARDWARE\DEALDATA\dealdata.h)(0x5CE7BF4F)
 I (..\SYSTEM\sys\sys.h)(0x5BE3A193)
 I (..\USER\stm32f10x.h)(0x4D783CB4)
 I (..\CORE\core_cm3.h)(0x4D523B58)
@@ -181,7 +181,7 @@ I (D:\keil5\ARM\ARMCC\include\string.h)(0x5475F300)
 I (..\STM32F10x_FWLib\inc\stm32f10x_dma.h)(0x4D783BB4)
 I (..\SYSTEM\usart\usart.h)(0x5CDCC5DD)
 I (..\SYSTEM\sys\sys.h)(0x5BE3A193)
-I (..\HARDWARE\DEALDATA\dealdata.h)(0x5CE75C5A)
+I (..\HARDWARE\DEALDATA\dealdata.h)(0x5CE7BF4F)
 I (D:\keil5\ARM\ARMCC\include\stdarg.h)(0x5475F2FA)
 I (..\FSC_STOS\fsc_stos.h)(0x5C4C5CC2)
 I (D:\keil5\ARM\ARMCC\include\stdlib.h)(0x5475F300)
@@ -285,7 +285,7 @@ I (D:\keil5\ARM\ARMCC\include\stdio.h)(0x5475F300)
 I (D:\keil5\ARM\ARMCC\include\string.h)(0x5475F300)
 F (..\FSC_STOS\FSC_STOS.h)(0x5C4C5CC2)()
 F (..\FSC_STOS\FSC_STOS.lib)(0x5C4965FE)()
-F (..\FSC_STOS\main.c)(0x5CE7A22B)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I..\HARDWARE\LED -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\SYSTEM\usart -I..\USER -I..\STM32F10x_FWLib\inc -I..\CORE -I..\HARDWARE\KEY -I..\HARDWARE\TIMER -I..\HARDWARE\ADC -I..\HARDWARE\PID -I..\HARDWARE\RUNCONTROL -I..\HARDWARE\MODBUS -I..\HARDWARE\PS -I..\HARDWARE\CONTROL -I..\HARDWARE\KALMAN -I..\HARDWARE\DEALDATA -I..\HARDWARE\ENCODER -I..\HARDWARE\IIC -I..\HARDWARE\GY85 -I..\FSC_STOS-I D:\项目\ROS全向轮小车\car\USER\RTE-I D:\keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\keil5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\main_1.o --omf_browse ..\obj\main_1.crf --depend ..\obj\main_1.d)
+F (..\FSC_STOS\main.c)(0x5CE7C0FE)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I..\HARDWARE\LED -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\SYSTEM\usart -I..\USER -I..\STM32F10x_FWLib\inc -I..\CORE -I..\HARDWARE\KEY -I..\HARDWARE\TIMER -I..\HARDWARE\ADC -I..\HARDWARE\PID -I..\HARDWARE\RUNCONTROL -I..\HARDWARE\MODBUS -I..\HARDWARE\PS -I..\HARDWARE\CONTROL -I..\HARDWARE\KALMAN -I..\HARDWARE\DEALDATA -I..\HARDWARE\ENCODER -I..\HARDWARE\IIC -I..\HARDWARE\GY85 -I..\FSC_STOS-I D:\项目\ROS全向轮小车\car\USER\RTE-I D:\keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I D:\keil5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\obj\main_1.o --omf_browse ..\obj\main_1.crf --depend ..\obj\main_1.d)
 I (..\FSC_STOS\fsc_stos.h)(0x5C4C5CC2)
 I (..\USER\stm32f10x.h)(0x4D783CB4)
 I (..\CORE\core_cm3.h)(0x4D523B58)
@@ -310,7 +310,7 @@ I (..\HARDWARE\RUNCONTROL\runcontrol.h)(0x5CC7DBB5)
 I (..\HARDWARE\CONTROL\control.h)(0x5CE517C0)
 I (..\HARDWARE\GY85\gy85.h)(0x5CDCDFC1)
 I (..\HARDWARE\KALMAN\kalman.h)(0x54002F6F)
-I (..\HARDWARE\DEALDATA\dealdata.h)(0x5CE75C5A)
+I (..\HARDWARE\DEALDATA\dealdata.h)(0x5CE7BF4F)
 I (..\USER\stm32f10x_it.h)(0x4D99A426)
 I (..\HARDWARE\ENCODER\Encoder.h)(0x5CC6736C)
 I (..\SYSTEM\usart\bsp_usart.h)(0x5CE7A1D3)

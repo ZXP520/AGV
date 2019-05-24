@@ -154,7 +154,7 @@ void Task5(void) //任务5   200MS检测是否有数据，没有数据则停止运动
 		 }
 		 if(Time_Cnt>200)
 		 {
-				switch(DealData_Rx.DataCMD)//
+				switch(DealData_Rx.CMD)//
 				{
 					case 0x00:break;
 					case 0x01:break;

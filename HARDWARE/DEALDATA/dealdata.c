@@ -41,7 +41,6 @@ void SendData_To_Ros(void)
 	
 	int Cheksum=0;//校验和
 	u8 i=0;
-		
 	TXData.InRxData[0]=DATAHEAD;  //头
 	TXData.InRxData[1]=TXDATALENTH+AllWheel.imu_num;//包长度(8+imu轴数)	
 	TXData.InRxData[2]=GetEncoder.V3;								//右轮编码器
@@ -50,7 +49,6 @@ void SendData_To_Ros(void)
 	TXData.InRxData[5]=Wheel_D;											//轮子直径
 	TXData.InRxData[6]=Wheel_RATIO;									//电机减速比
 	//获得IMU数据
-	
 	switch(AllWheel.imu_num)
 	{
 		case 0: return;//为0则不发任何数据给ROS，初始默认为0
@@ -113,58 +111,65 @@ s16 DealSmallData(s16 data)
 	return temp;
 }
 
+
+//提取数据
+u8 ExtractData(void)
+{
+	u8 i;
+	u16 ChekSum=0;
+	if(RXData.InRxData[0]==(s16)DATAHEAD )//数据头
+	{
+		//取得数据特征
+		DealData_Rx.FrameLength=RXData.ChRxData[2];
+		DealData_Rx.CMD=(RXData.ChRxData[3]<<8)+RXData.ChRxData[4];
+		DealData_Rx.DataNum=RXData.ChRxData[5];
+		DealData_Rx.CheckSum=(RXData.ChRxData[DealData_Rx.FrameLength-2]<<8)+RXData.ChRxData[DealData_Rx.FrameLength-1];
+		
+		for(i=0;i<DealData_Rx.FrameLength-1;i++)
+		{
+			ChekSum+=RXData.ChRxData[i];
+		}
+		if(ChekSum == DealData_Rx.CheckSum)//数据校验正确
+		{
+			DealData_Rx.Success_Flag=1;
+			return 1;
+		}
+		else
+		{
+			DealData_Rx.Success_Flag=0;
+			return 0;
+		}
+	}
+}
+
 //处理接收到的数据，中断调用
 DEALDATA_RX DealData_Rx;
 void DealRXData(void)
 {
-	u8 i;
-	int ChekSum=0;
-	if(RXData.InRxData[0]==(s16)DATAHEAD && RXData.ChRxData[2]==(u8)RXDATALENTH*2 )//数据头和长度都对
-	{
 	
-		for(i=0;i<RXData.ChRxData[2]/2-1;i++)
-		{
-			ChekSum+=RXData.InRxData[i];
-		}
-		if(ChekSum == RXData.InRxData[RXDATALENTH-1])//数据校验正确
-		{
-			DealData_Rx.DataCMD=RXData.ChRxData[4];//取得命令
-			
-			DealData_Rx.Data[0]=RXData.InRxData[3];//取得数据
-			DealData_Rx.Data[1]=RXData.InRxData[4];
-			DealData_Rx.Data[2]=RXData.InRxData[5];
-			DealData_Rx.Data[3]=RXData.InRxData[6];
-			
-			switch(RXData.ChRxData[4])//命令解析
-			{
-				case 0x00:break;
-				case 0x01:break;
-				case 0x02:    //差速两轮
-				{
-					LeftWheelSpeedSet	(DealSmallData(RXData.InRxData[3]));//设置左轮速度
-					RightWheelSpeedSet(DealSmallData(RXData.InRxData[4]));//设置右轮速度
-					break;
-				}
-				case 0x03:		//全向三轮
-				{
-					OmniWheelscontrol(DealSmallData(RXData.InRxData[3]),DealSmallData(RXData.InRxData[4]),DealSmallData(RXData.InRxData[5]),DealSmallData(RXData.InRxData[6]));
-					break;
-				}
-				default:break;
-			}
-			
-			AllWheel.stop_flag			=RXData.ChRxData[15];//停车标志
-			AllWheel.navigation_flag=RXData.ChRxData[16];//导航标志
-			AllWheel.imu_num				=RXData.InRxData[8]; //陀螺仪数据轴数
-			DealData_Rx.Success_Flag=1;  										 //数据接收成功
-		}
-		else
-		{
-			DealData_Rx.Success_Flag=0;  										 //数据接收失败
-		}
-	}
-	else
+	if(ExtractData()){;}
+	else{return;}
+	switch(DealData_Rx.CMD)//命令解析
 	{
-		DealData_Rx.Success_Flag=0;  										 //数据接收失败
+		case 0x00:break;
+		case 0x01:break;
+		case 0x02:    //差速两轮
+		{
+			LeftWheelSpeedSet	(DealSmallData(RXData.InRxData[3]));//设置左轮速度
+			RightWheelSpeedSet(DealSmallData(RXData.InRxData[4]));//设置右轮速度
+			break;
+		}
+		case 0x03:		//全向三轮
+		{
+			OmniWheelscontrol(DealSmallData(RXData.InRxData[3]),DealSmallData(RXData.InRxData[4]),DealSmallData(RXData.InRxData[5]),DealSmallData(RXData.InRxData[6]));
+			break;
+		}
+		default:break;
 	}
+
+	AllWheel.stop_flag			=RXData.ChRxData[15];//停车标志
+	AllWheel.navigation_flag=RXData.ChRxData[16];//导航标志
+	AllWheel.imu_num				=RXData.InRxData[8]; //陀螺仪数据轴数
+	DealData_Rx.Success_Flag=1;  										 //数据接收成功
+	
 }
