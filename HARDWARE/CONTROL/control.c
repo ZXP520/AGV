@@ -91,6 +91,8 @@ void RunWheelcontrol(void)
 		
 		TIM_SetCompare1(TIM1,0); 
 		TIM_SetCompare2(TIM1,0); 
+		TIM_SetCompare3(TIM1,0); 
+		TIM_SetCompare4(TIM1,0); 
 		return;
 	}
 	
@@ -228,8 +230,10 @@ float LVelocity_KP=120,LVelocity_KI=3;
 int LeftIncremental_PI (int Encoder,int Target)
 { 	
 	 static float Bias=0,Pwm=0,Last_bias=0;
-	 Bias=Target-Encoder;                                  //计算偏差
-	 Pwm+=LVelocity_KP*(Bias-Last_bias)+LVelocity_KI*Bias;   //增量式PI控制器
+	 Bias=Target-Encoder;                                   //计算偏差
+	 Pwm+=LVelocity_KP*(Bias-Last_bias)+LVelocity_KI*Bias;  //增量式PI控制器
+	
+	 if(Target==0){Pwm=0;}																	//目标为0直接输出0
 	 if(Pwm>1200){Pwm=1200;}
 	 else if(Pwm<0){Pwm=0;}
 	 Last_bias=Bias;	                                     //保存上一次偏差 
@@ -245,6 +249,8 @@ int RightIncremental_PI (int Encoder,int Target)
 	 static float Bias=0,Pwm=0,Last_bias=0;
 	 Bias=Target-Encoder;                                  //计算偏差
 	 Pwm+=RVelocity_KP*(Bias-Last_bias)+RVelocity_KI*Bias;   //增量式PI控制器
+	
+	 if(Target==0){Pwm=0;}																//目标为0直接输出0
 	 if(Pwm>1200){Pwm=1200;}
 	 else if(Pwm<0){Pwm=0;}
 	 Last_bias=Bias;	                                     //保存上一次偏差 
@@ -259,6 +265,8 @@ int ThreeIncremental_PI (int Encoder,int Target)
 	 static float Bias=0,Pwm=0,Last_bias=0;
 	 Bias=Target-Encoder;                                  //计算偏差
 	 Pwm+=TVelocity_KP*(Bias-Last_bias)+TVelocity_KI*Bias;   //增量式PI控制器
+	
+	 if(Target==0){Pwm=0;}																	//目标为0直接输出0
 	 if(Pwm>1200){Pwm=1200;}
 	 else if(Pwm<0){Pwm=0;}
 	 Last_bias=Bias;	                                     //保存上一次偏差 

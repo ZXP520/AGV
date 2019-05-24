@@ -101,39 +101,70 @@ void SendData_To_Ros(void)
 	
 }
 
+//处理小速度问题小于8就为0
+s16 DealSmallData(s16 data)
+{
+	static s16 temp=0;
+	temp = data;
+	if(temp<8&&temp>-8)
+	{
+		temp=0;
+	}
+	return temp;
+}
+
 //处理接收到的数据，中断调用
+DEALDATA_RX DealData_Rx;
 void DealRXData(void)
 {
 	u8 i;
 	int ChekSum=0;
 	if(RXData.InRxData[0]==(s16)DATAHEAD && RXData.ChRxData[2]==(u8)RXDATALENTH*2 )//数据头和长度都对
 	{
+	
 		for(i=0;i<RXData.ChRxData[2]/2-1;i++)
 		{
 			ChekSum+=RXData.InRxData[i];
 		}
 		if(ChekSum == RXData.InRxData[RXDATALENTH-1])//数据校验正确
 		{
+			DealData_Rx.DataCMD=RXData.ChRxData[4];//取得命令
+			
+			DealData_Rx.Data[0]=RXData.InRxData[3];//取得数据
+			DealData_Rx.Data[1]=RXData.InRxData[4];
+			DealData_Rx.Data[2]=RXData.InRxData[5];
+			DealData_Rx.Data[3]=RXData.InRxData[6];
+			
 			switch(RXData.ChRxData[4])//命令解析
 			{
 				case 0x00:break;
 				case 0x01:break;
 				case 0x02:    //差速两轮
 				{
-					LeftWheelSpeedSet	(RXData.InRxData[3]);//设置左轮速度
-					RightWheelSpeedSet(RXData.InRxData[4]);//设置右轮速度
+					LeftWheelSpeedSet	(DealSmallData(RXData.InRxData[3]));//设置左轮速度
+					RightWheelSpeedSet(DealSmallData(RXData.InRxData[4]));//设置右轮速度
 					break;
 				}
 				case 0x03:		//全向三轮
 				{
-					OmniWheelscontrol(RXData.InRxData[3],RXData.InRxData[4],RXData.InRxData[5],RXData.InRxData[6]);
+					OmniWheelscontrol(DealSmallData(RXData.InRxData[3]),DealSmallData(RXData.InRxData[4]),DealSmallData(RXData.InRxData[5]),DealSmallData(RXData.InRxData[6]));
 					break;
 				}
+				default:break;
 			}
 			
 			AllWheel.stop_flag			=RXData.ChRxData[15];//停车标志
 			AllWheel.navigation_flag=RXData.ChRxData[16];//导航标志
 			AllWheel.imu_num				=RXData.InRxData[8]; //陀螺仪数据轴数
+			DealData_Rx.Success_Flag=1;  										 //数据接收成功
 		}
+		else
+		{
+			DealData_Rx.Success_Flag=0;  										 //数据接收失败
+		}
+	}
+	else
+	{
+		DealData_Rx.Success_Flag=0;  										 //数据接收失败
 	}
 }

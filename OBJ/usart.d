@@ -13,3 +13,6 @@
 ..\obj\usart.o: ..\STM32F10x_FWLib\inc\misc.h
 ..\obj\usart.o: ..\SYSTEM\usart\usart.h
 ..\obj\usart.o: D:\keil5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\usart.o: ..\FSC_STOS\fsc_stos.h
+..\obj\usart.o: D:\keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+..\obj\usart.o: D:\keil5\ARM\ARMCC\Bin\..\include\string.h

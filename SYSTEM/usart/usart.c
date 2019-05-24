@@ -1,5 +1,6 @@
 #include "sys.h"
 #include "usart.h"	  
+#include "fsc_stos.h" 
 ////////////////////////////////////////////////////////////////////////////////// 	 
 //如果使用ucos,则包括下面的头文件即可.
 #if SYSTEM_SUPPORT_OS
@@ -33,7 +34,8 @@
  
 
 //////////////////////////////////////////////////////////////////
-//加入以下代码,支持printf函数,而不需要选择use MicroLIB	  
+//加入以下代码,支持printf函数,而不需要选择use MicroLIB	 
+
 #if 1
 #pragma import(__use_no_semihosting)             
 //标准库需要的支持函数                 
@@ -52,8 +54,10 @@ _sys_exit(int x)
 //重定义fputc函数 
 int fputc(int ch, FILE *f)
 {      
+	//OSSchedLock();         //任务切换上锁       
 	while((USART3->SR&0X40)==0);//循环发送,直到发送完毕   
-    USART3->DR = (u8) ch;      
+    USART3->DR = (u8) ch;  
+  //OSSchedUnlock();	
 	return ch;
 }
 #endif 
@@ -112,6 +116,7 @@ void uart_init(u32 bound){
 
 }
 
+/*
 void USART3_IRQHandler(void)                	//串口1中断服务程序
 	{
 	u8 Res;
@@ -144,6 +149,6 @@ void USART3_IRQHandler(void)                	//串口1中断服务程序
 #if SYSTEM_SUPPORT_OS 	//如果SYSTEM_SUPPORT_OS为真，则需要支持OS.
 	OSIntExit();  											 
 #endif
-} 
+} */
 #endif	
 
