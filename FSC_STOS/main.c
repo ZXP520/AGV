@@ -68,8 +68,7 @@ int main(void)
 	  //全局初使化,推荐把所有任务都使用到的初使化放在此处，task独立用到的初使化放在task内
     /************************************************************************************/	
 	  /*------------------全局初使化区-------------------*/
-	  NVIC_Configuration(); 	 		
-	  //uart_init(115200);				  
+	  NVIC_Configuration(); 	 			  
 	  USART2_Config(115200);
 		USART3_Config(115200);
 	  Time_Config();							
@@ -122,9 +121,8 @@ void Task3(void) //任务3 串口2发送数据给ROS
 {	
 	while(1) 
 	 {	 
-		 SendData_To_Ros();
-		 //TestSendData_To_Ros();
-  	 OS_delayMs(20);			//示例代码，使用时删除		 
+		 SendEncoderAndIMU20Ms();
+  	 OS_delayMs(5);				 
 	 }			
 }
 
@@ -134,7 +132,7 @@ void Task4(void) //任务4  打印数据
 	 {		
 			u3_printf("PWM:%d  Right:%d	PWM:%d  Left:%d	PWM:%d	Three:%d	aim:%d\n",RightWheel.MotoPwm,abs(GetEncoder.V3),LeftWheel.MotoPwm,abs(GetEncoder.V5),
 		  ThreeWheel.MotoPwm,abs(GetEncoder.V4),LeftWheel.AimsEncoder);
-  		OS_delayMs(100); 			//示例代码，使用时删除		
+  		OS_delayMs(500); 			//示例代码，使用时删除		
 	 }
 }
 
@@ -154,24 +152,10 @@ void Task5(void) //任务5   200MS检测是否有数据，没有数据则停止运动
 		 }
 		 if(Time_Cnt>200)
 		 {
-				switch(DealData_Rx.CMD)//
-				{
-					case 0x00:break;
-					case 0x01:break;
-					case 0x02:    //
-					{
-						LeftWheelSpeedSet	(0);
-						RightWheelSpeedSet(0);
-						AllWheel.stop_flag=1;
-						break;
-					}
-					case 0x03:		//
-					{
-						AllWheel.stop_flag=1;
-						OmniWheelscontrol(0,0,0,0);
-						break;
-					}
-				}
+			 LeftWheelSpeedSet (0);
+			 RightWheelSpeedSet(0);
+			 ThreeWheelSpeedSet(0);
+			 AllWheel.stop_flag=1;
 		 }
      OS_delayMs(1); 				//1Ms进一次
 	 }

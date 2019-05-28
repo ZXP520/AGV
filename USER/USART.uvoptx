@@ -186,18 +186,18 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>302</LineNumber>
+          <LineNumber>85</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134226036</Address>
+          <Address>134222682</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>D:\椤圭洰\ROS鍏ㄥ悜杞皬杞?car\SYSTEM\usart\bsp_usart.c</Filename>
+          <Filename>D:\椤圭洰\ROS鍏ㄥ悜杞皬杞?car\HARDWARE\DEALDATA\dealdata.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression></Expression>
+          <Expression>\\USART\../HARDWARE/DEALDATA/dealdata.c\85</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -345,6 +345,11 @@
           <count>28</count>
           <WinNumber>1</WinNumber>
           <ItemText>USART3_Rx_Buff</ItemText>
+        </Ww>
+        <Ww>
+          <count>29</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>TempData</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

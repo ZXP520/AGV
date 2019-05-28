@@ -6,16 +6,17 @@
 #include "usart.h"
 #include <math.h>
 #include "Encoder.h"
-/**************************************************************************
-函数功能：轮子速度设置 mm/s
-入口参数：direction(1为前进，0为后退)
-					speed     （速度mm/s）34mm/s-376mm/s  精度为34mm/s
-	
-**************************************************************************/
+
+
 Wheel LeftWheel,RightWheel,ThreeWheel,AllWheel;//定义左右轮结构体
 
-
-//左轮速度设置
+/*******************************************************************************
+* Function Name  : LeftWheelSpeedSet
+* Description    : 左轮速度设置
+* Input          : 左轮速度 
+* Output         : None
+* Return         : None 
+****************************************************************************** */
 void LeftWheelSpeedSet(int speed)
 {
 	if(speed>=0)//正方向
@@ -34,7 +35,13 @@ void LeftWheelSpeedSet(int speed)
 	LeftWheel.AimsEncoder=speed*SPEED_TO_ENCODER+0.5;//+0.5四舍五入
 }
 
-//右轮速度设置
+/*******************************************************************************
+* Function Name  : LeftWheelSpeedSet
+* Description    : 右轮速度设置
+* Input          : 右轮速度 
+* Output         : None
+* Return         : None 
+****************************************************************************** */
 void  RightWheelSpeedSet(int speed)
 {
 	if(speed>=0)//正方向
@@ -51,7 +58,13 @@ void  RightWheelSpeedSet(int speed)
 	RightWheel.AimsEncoder=speed*SPEED_TO_ENCODER+0.5;//+0.5四舍五入
 }
 
-//三轮速度设置
+/*******************************************************************************
+* Function Name  : LeftWheelSpeedSet
+* Description    : 三轮速度设置
+* Input          : 三轮速度 
+* Output         : None
+* Return         : None 
+****************************************************************************** */
 void  ThreeWheelSpeedSet(int speed)
 {
 	if(speed>=0)//正方向
@@ -72,11 +85,8 @@ void  ThreeWheelSpeedSet(int speed)
 /**************************************************************************
 函数功能：PID运动控制
 					10ms进一次
-					在系统的滴答定时器中调用
+					在任务2中调用
 **************************************************************************/
-PID_AbsoluteType PID_Control;//定义PID算法的结构体
-
-
 void RunWheelcontrol(void)
 {	
 	float temp=0;
@@ -106,11 +116,8 @@ void RunWheelcontrol(void)
 	RightWheel.MotoPwm=myabs(RightIncremental_PI(abs(GetEncoder.V3) ,RightWheel.AimsEncoder));
 #endif
 	
-	
-	
 	Xianfu_Pwm();//限幅
-	
-	
+
 	//设置PWM与方向
 	SetLeft_Pwm (LeftWheel.MotoPwm  ,LeftWheel.Direct );
 	SetRight_Pwm(RightWheel.MotoPwm ,RightWheel.Direct);
@@ -139,7 +146,11 @@ void SetLeft_Pwm(int moto,u8 mode)
 		
 	}
 }
-
+/**************************************************************************
+函数功能：赋值给PWM寄存器
+入口参数：PWM mode(1为前进， 0为后退)
+返回  值：无
+**************************************************************************/
 void SetRight_Pwm(int moto,u8 mode)
 {
 	if(mode)
@@ -156,7 +167,11 @@ void SetRight_Pwm(int moto,u8 mode)
 	}
 }
 
-
+/**************************************************************************
+函数功能：赋值给PWM寄存器
+入口参数：PWM mode(1为前进， 0为后退)
+返回  值：无
+**************************************************************************/
 void SetThree_Pwm(int moto,u8 mode)
 {
 	if(mode)
@@ -179,7 +194,6 @@ void SetThree_Pwm(int moto,u8 mode)
 入口参数：无
 返回  值：无
 **************************************************************************/
-
 void Xianfu_Pwm(void)
 {	
 	  //TIM8_Period=1200;    //===PWM满幅是1200 限制在1200
@@ -206,12 +220,7 @@ int myabs(int a)
 	  return temp;
 }
 
-
-
-
 float Amplitude_PKP=20,Amplitude_PKI=0.1,Amplitude_PKD=25,Amplitude_VKP=2,Amplitude_VKI=3; //PID调试相关参数
-
-
 /**************************************************************************
 函数功能：增量PI控制器
 入口参数：编码器测量值，目标速度

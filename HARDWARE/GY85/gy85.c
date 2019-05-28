@@ -1,6 +1,13 @@
 #include "gy85.h"
 #include "myiic.h"
 
+/*******************************************************************************
+* Function Name  : ExtractData
+* Description    : ???????
+* Input          : None 
+* Output         : None
+* Return         : ?????? 0???? 1????
+****************************************************************************** */
 void InitGY85(void) //≥ı ºªØMpu6050
 {
 	 I2C_GPIO_Config();

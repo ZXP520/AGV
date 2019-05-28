@@ -2,7 +2,7 @@
 #define __DEALDATA_H 
 #include "sys.h"
 
-#define	DATAHEAD    0xDEDE //数据头
+#define	DATAHEAD    0xDEED //数据头
 #define RXDATALENTH 0x0A //接收数据长度
 #define TXDATALENTH 0x0008 //发送数据长度
 
@@ -14,6 +14,7 @@ typedef struct
 	u16   CMD;					//数据命令
 	u8    DataNum;				//命令个数
 	s16   CheckSum;			//校验码
+	u8    Respond_Flag; //回应标志 1：回应 0：不回应
 	
 }DEALDATA_RX;
 extern DEALDATA_RX DealData_Rx;
@@ -44,13 +45,18 @@ typedef enum
 	SWhellSpeed,							//轮子速度
 	STurningRadius,     			//轮子拐弯半径
 	SWhellAcceleration,       //轮子加速度
-	SChassisAttitude  				//底盘姿态
+	SChassisAttitude,  				//底盘姿态
+	UploadData=0xF000					//上传数据命令
 	
 }SetCMD;//设置命令
 
 
+extern union TEMPDATA{
+    s16  InTempData[15];
+    u8 	 ChTempData[30];
+}TempTxData,TempRxData;
 
-void SendData_To_Ros(void);
-void TestSendData_To_Ros(void);
+
 void DealRXData(void);
+void SendEncoderAndIMU20Ms(void);
 #endif
