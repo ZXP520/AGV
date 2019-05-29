@@ -8,7 +8,7 @@
 #include "Encoder.h"
 
 
-Wheel LeftWheel,RightWheel,ThreeWheel,AllWheel;//定义左右轮结构体
+Wheel LeftWheel,RightWheel,ThreeWheel,FourWheel,AllWheel;//定义左右轮结构体
 
 /*******************************************************************************
 * Function Name  : LeftWheelSpeedSet
@@ -19,6 +19,10 @@ Wheel LeftWheel,RightWheel,ThreeWheel,AllWheel;//定义左右轮结构体
 ****************************************************************************** */
 void LeftWheelSpeedSet(int speed)
 {
+//左轮反向 差速
+#if	VERSION==0
+	  speed=-speed;
+#endif
 	if(speed>=0)//正方向
 	{
 		if(speed>MAXSPEED){speed=MAXSPEED;}//限速
@@ -29,9 +33,8 @@ void LeftWheelSpeedSet(int speed)
 		speed=-speed;
 		if(speed>MAXSPEED){speed=MAXSPEED;}//限速
 		LeftWheel.Direct=0;
-	}
-	
-	
+	}	
+	LeftWheel.AimSpeed=speed;   //目标速度
 	LeftWheel.AimsEncoder=speed*SPEED_TO_ENCODER+0.5;//+0.5四舍五入
 }
 
@@ -55,6 +58,7 @@ void  RightWheelSpeedSet(int speed)
 		if(speed>MAXSPEED){speed=MAXSPEED;}//限速
 		RightWheel.Direct=0;
 	}
+	RightWheel.AimSpeed=speed;
 	RightWheel.AimsEncoder=speed*SPEED_TO_ENCODER+0.5;//+0.5四舍五入
 }
 
@@ -78,9 +82,34 @@ void  ThreeWheelSpeedSet(int speed)
 		if(speed>MAXSPEED){speed=MAXSPEED;}//限速
 		ThreeWheel.Direct=0;
 	}
+	ThreeWheel.AimSpeed=speed;
 	ThreeWheel.AimsEncoder=speed*SPEED_TO_ENCODER+0.5;//+0.5四舍五入
 }
 
+
+/*******************************************************************************
+* Function Name  : LeftWheelSpeedSet
+* Description    : 四轮速度设置
+* Input          : 四轮速度 
+* Output         : None
+* Return         : None 
+****************************************************************************** */
+void  FourWheelSpeedSet(int speed)
+{
+	if(speed>=0)//正方向
+	{
+		if(speed>MAXSPEED){speed=MAXSPEED;}//限速
+		FourWheel.Direct=1;
+	}
+	else        //反方向
+	{
+		speed=-speed;
+		if(speed>MAXSPEED){speed=MAXSPEED;}//限速
+		FourWheel.Direct=0;
+	}
+	FourWheel.AimSpeed=speed;
+	FourWheel.AimsEncoder=speed*SPEED_TO_ENCODER+0.5;//+0.5四舍五入
+}
 
 /**************************************************************************
 函数功能：PID运动控制
@@ -107,14 +136,10 @@ void RunWheelcontrol(void)
 	}
 	
 	//获得PID调速后的PWM
-#if VERSION==1
 	LeftWheel.MotoPwm =myabs( LeftIncremental_PI(abs(GetEncoder.V3) ,LeftWheel.AimsEncoder ));//获得PID调速后的PWM
-	RightWheel.MotoPwm=myabs(RightIncremental_PI(abs(GetEncoder.V4) ,RightWheel.AimsEncoder));
+	RightWheel.MotoPwm=myabs(RightIncremental_PI(abs(GetEncoder.V1) ,RightWheel.AimsEncoder));
 	ThreeWheel.MotoPwm=myabs(ThreeIncremental_PI(abs(GetEncoder.V5) ,ThreeWheel.AimsEncoder));
-#else
-	LeftWheel.MotoPwm =myabs( LeftIncremental_PI(abs(GetEncoder.V5) ,LeftWheel.AimsEncoder ));//获得PID调速后的PWM
-	RightWheel.MotoPwm=myabs(RightIncremental_PI(abs(GetEncoder.V3) ,RightWheel.AimsEncoder));
-#endif
+	FourWheel.MotoPwm =myabs( FourIncremental_PI(abs(GetEncoder.V2) ,ThreeWheel.AimsEncoder));
 	
 	Xianfu_Pwm();//限幅
 
@@ -122,7 +147,7 @@ void RunWheelcontrol(void)
 	SetLeft_Pwm (LeftWheel.MotoPwm  ,LeftWheel.Direct );
 	SetRight_Pwm(RightWheel.MotoPwm ,RightWheel.Direct);
 	SetThree_Pwm(ThreeWheel.MotoPwm ,ThreeWheel.Direct);
-	
+	SetFour_Pwm (FourWheel.MotoPwm  ,FourWheel.Direct );
 }
 
 
@@ -135,15 +160,13 @@ void SetLeft_Pwm(int moto,u8 mode)
 {
 	if(mode)
 	{
-		TIM_SetCompare1(TIM8,TIM8_Period-moto); 
-		TIM_SetCompare2(TIM8,TIM8_Period); 
-		
+		TIM_SetCompare1(TIM8,TIM8_Period); 
+		TIM_SetCompare2(TIM8,TIM8_Period-moto); 
 	}
 	else
 	{
-		TIM_SetCompare1(TIM8,TIM8_Period); 
-		TIM_SetCompare2(TIM8,TIM8_Period-moto); 
-		
+		TIM_SetCompare1(TIM8,TIM8_Period-moto); 
+		TIM_SetCompare2(TIM8,TIM8_Period); 
 	}
 }
 /**************************************************************************
@@ -176,14 +199,33 @@ void SetThree_Pwm(int moto,u8 mode)
 {
 	if(mode)
 	{
-		TIM_SetCompare1(TIM1,TIM8_Period); 
-		TIM_SetCompare2(TIM1,TIM8_Period-moto); 
+		TIM_SetCompare1(TIM4,TIM8_Period); 
+		TIM_SetCompare2(TIM4,TIM8_Period-moto); 
 		
 	}
 	else
 	{	
-		TIM_SetCompare1(TIM1,TIM8_Period-moto); 
-		TIM_SetCompare2(TIM1,TIM8_Period); 
+		TIM_SetCompare1(TIM4,TIM8_Period-moto); 
+		TIM_SetCompare2(TIM4,TIM8_Period); 
+	}
+}
+
+/**************************************************************************
+函数功能：赋值给PWM寄存器
+入口参数：PWM mode(1为前进， 0为后退)
+返回  值：无
+**************************************************************************/
+void SetFour_Pwm(int moto,u8 mode)
+{
+	if(mode)
+	{
+		TIM_SetCompare3(TIM4,TIM8_Period); 
+		TIM_SetCompare4(TIM4,TIM8_Period-moto); 
+	}
+	else
+	{	
+		TIM_SetCompare3(TIM4,TIM8_Period-moto); 
+		TIM_SetCompare4(TIM4,TIM8_Period); 
 	}
 }
 
@@ -205,6 +247,9 @@ void Xianfu_Pwm(void)
 	
 		if(ThreeWheel.MotoPwm<-TIM8_Period) ThreeWheel.MotoPwm=-TIM8_Period;	
 		if(ThreeWheel.MotoPwm>TIM8_Period)  ThreeWheel.MotoPwm=TIM8_Period;	
+	
+		if(FourWheel.MotoPwm<-TIM8_Period) FourWheel.MotoPwm=-TIM8_Period;	
+		if(FourWheel.MotoPwm>TIM8_Period)  FourWheel.MotoPwm=TIM8_Period;	
 }
 
 /**************************************************************************
@@ -212,7 +257,7 @@ void Xianfu_Pwm(void)
 入口参数：int
 返回  值：unsigned int
 **************************************************************************/
-int myabs(int a)
+static int myabs(int a)
 { 		   
 	  int temp;
 		if(a<0)  temp=0;//temp=-a;  
@@ -233,53 +278,74 @@ pwm代表增量输出
 在我们的速度控制闭环系统里面，只使用PI控制
 pwm+=Kp[e（k）-e(k-1)]+Ki*e(k)
 **************************************************************************/
-//左PID
-float LVelocity_KP=120,LVelocity_KI=3;
 
-int LeftIncremental_PI (int Encoder,int Target)
-{ 	
-	 static float Bias=0,Pwm=0,Last_bias=0;
-	 Bias=Target-Encoder;                                   //计算偏差
-	 Pwm+=LVelocity_KP*(Bias-Last_bias)+LVelocity_KI*Bias;  //增量式PI控制器
+PID_AddType LeftPID,RightPID,ThreePID,FourPID;
+
+//PID参数初始化
+void Init_PID(void)
+{
+	LeftPID.kp=120;
+	LeftPID.ki=3;
 	
-	 if(Target==0){Pwm=0;}																	//目标为0直接输出0
-	 if(Pwm>1200){Pwm=1200;}
-	 else if(Pwm<0){Pwm=0;}
-	 Last_bias=Bias;	                                     //保存上一次偏差 
-	 return Pwm;                                           //增量输出
+	RightPID.kp=120;
+	RightPID.ki=3;
+	
+	ThreePID.kp=120;
+	ThreePID.ki=3;
+	
+	FourPID.kp=120;
+	FourPID.ki=3;
+}
 
+//左PID
+
+static int LeftIncremental_PI (int Encoder,int Target)
+{ 	
+	LeftPID.errNow=Target-Encoder;  																												//计算偏差
+	LeftPID.ctrOut+=LeftPID.kp*(LeftPID.errNow-LeftPID.errLast)+LeftPID.ki*LeftPID.errNow;	//增量式PI控制器
+	LeftPID.errLast=LeftPID.errNow;																													//保存上一次偏差 
+	if(Target==0){LeftPID.ctrOut=0;}
+	if(LeftPID.ctrOut>TIM8_Period){LeftPID.ctrOut=TIM8_Period;}
+	else if(LeftPID.ctrOut<0){LeftPID.ctrOut=0;}
+	return LeftPID.ctrOut;																																	//增量输出
 }
 
 //右PID
-float RVelocity_KP=120,RVelocity_KI=3;
-
-int RightIncremental_PI (int Encoder,int Target)
+static int RightIncremental_PI (int Encoder,int Target)
 { 	
-	 static float Bias=0,Pwm=0,Last_bias=0;
-	 Bias=Target-Encoder;                                  //计算偏差
-	 Pwm+=RVelocity_KP*(Bias-Last_bias)+RVelocity_KI*Bias;   //增量式PI控制器
-	
-	 if(Target==0){Pwm=0;}																//目标为0直接输出0
-	 if(Pwm>1200){Pwm=1200;}
-	 else if(Pwm<0){Pwm=0;}
-	 Last_bias=Bias;	                                     //保存上一次偏差 
-	 return Pwm;                                           //增量输出
+	RightPID.errNow=Target-Encoder;  																												//计算偏差
+	RightPID.ctrOut+=RightPID.kp*(RightPID.errNow-RightPID.errLast)+RightPID.ki*RightPID.errNow;	//增量式PI控制器
+	RightPID.errLast=RightPID.errNow;																													//保存上一次偏差 
+	if(Target==0){RightPID.ctrOut=0;}
+	if(RightPID.ctrOut>TIM8_Period){RightPID.ctrOut=TIM8_Period;}
+	else if(RightPID.ctrOut<0){RightPID.ctrOut=0;}
+	return RightPID.ctrOut;																																	//增量输出
 }
 
 //三PID
-float TVelocity_KP=120,TVelocity_KI=3;
-
-int ThreeIncremental_PI (int Encoder,int Target)
+static int ThreeIncremental_PI (int Encoder,int Target)
 { 	
-	 static float Bias=0,Pwm=0,Last_bias=0;
-	 Bias=Target-Encoder;                                  //计算偏差
-	 Pwm+=TVelocity_KP*(Bias-Last_bias)+TVelocity_KI*Bias;   //增量式PI控制器
+	ThreePID.errNow=Target-Encoder;  																												//计算偏差
+	ThreePID.ctrOut+=ThreePID.kp*(ThreePID.errNow-ThreePID.errLast)+ThreePID.ki*ThreePID.errNow;	//增量式PI控制器
+	ThreePID.errLast=ThreePID.errNow;																													//保存上一次偏差 
+	if(Target==0){ThreePID.ctrOut=0;}
+	if(ThreePID.ctrOut>TIM8_Period){ThreePID.ctrOut=TIM8_Period;}
+	else if(ThreePID.ctrOut<0){ThreePID.ctrOut=0;}
+	return ThreePID.ctrOut;																																	//增量输出
+}
+
+//四PID
+static int FourIncremental_PI (int Encoder,int Target)
+{ 	
+
+	FourPID.errNow=Target-Encoder;  																												//计算偏差
+	FourPID.ctrOut+=FourPID.kp*(FourPID.errNow-FourPID.errLast)+FourPID.ki*FourPID.errNow;	//增量式PI控制器
+	FourPID.errLast=FourPID.errNow;																													//保存上一次偏差 
+	if(Target==0){FourPID.ctrOut=0;}
+	if(FourPID.ctrOut>TIM8_Period){FourPID.ctrOut=TIM8_Period;}
+	else if(FourPID.ctrOut<0){FourPID.ctrOut=0;}
+	return FourPID.ctrOut;																																	//增量输出
 	
-	 if(Target==0){Pwm=0;}																	//目标为0直接输出0
-	 if(Pwm>1200){Pwm=1200;}
-	 else if(Pwm<0){Pwm=0;}
-	 Last_bias=Bias;	                                     //保存上一次偏差 
-	 return Pwm;                                           //增量输出
 }
 /**************************************************************************
 函数功能：位置式PID控制器
@@ -350,20 +416,22 @@ void PID_AbsoluteMode(PID_AbsoluteType* PID)
     顺时针为正
 */
 #define  L 157 //轮子到中心的距离
+//旋转顺时针为正
 void OmniWheelscontrol(s16 Vx,s16 Vy,s16 W,s16 a)
 {
 	static double Va,Vb,Vc;
-	
+	Vx=-Vx;
+	W=-W;
 	Va=Vx*cos(a)+Vy*sin(a)+W*L;
 	Vb=Vx*(-cos(PI/3)*cos(a)+sin(PI/6)*sin(a))+Vy*(-cos(PI/3)*sin(a)-sin(PI/3)*cos(a))+W*L;
 	Vc=Vx*(-sin(PI/6)*cos(a)+cos(PI/6)*sin(a))+Vy*(-sin(PI/6)*sin(a)+cos(PI/6)*cos(a))+W*L;
 	
 	LeftWheelSpeedSet ( Va);
-	RightWheelSpeedSet(-Vb);
-	ThreeWheelSpeedSet(-Vc);
+	RightWheelSpeedSet( Vb);
+	ThreeWheelSpeedSet( Vc);
 	
 	//逆时针转动
-	//LeftWheelSpeedSet(-200);
+	//LeftWheelSpeedSet( 200);
 	//RightWheelSpeedSet(200);
 	//ThreeWheelSpeedSet(200);
 }

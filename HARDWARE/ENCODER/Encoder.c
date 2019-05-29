@@ -1,12 +1,36 @@
 #include "Encoder.h"
 #include "timer.h"
 #include <math.h>
-
+#include "control.h"	
 
 /*******************************编码器读取**************************
 */
 
 EncoderType GetEncoder;
+
+void Get_Encoder_T1(void)
+{
+  s32 CNT1_temp,CNT1_last;
+  
+  GetEncoder.cnt1 = TIM1 -> CNT;
+  CNT1_last = GetEncoder.CNT1;
+  CNT1_temp = GetEncoder.rcnt1 * prd + GetEncoder.cnt1;  
+  GetEncoder.V1 = CNT1_temp - CNT1_last;		
+  
+  while ((s32)(GetEncoder.V1)>Vbreak)				 
+  {							      
+   GetEncoder.rcnt1--;					      
+   CNT1_temp = GetEncoder.rcnt1 * prd + GetEncoder.cnt1;
+   GetEncoder.V1 = CNT1_temp - CNT1_last;		 
+  }							     
+  while ((s32)(GetEncoder.V1)<-Vbreak)			   
+  {							      
+   GetEncoder.rcnt1++;					      
+   CNT1_temp = GetEncoder.rcnt1 * prd + GetEncoder.cnt1;
+   GetEncoder.V1 = CNT1_temp - CNT1_last;		 
+  }
+  GetEncoder.CNT1 = CNT1_temp;				 
+}
 
 void Get_Encoder_T2(void)
 {
@@ -115,11 +139,16 @@ void Get_Encoder_T5(void)
 
 void Get_Encoder(void)
 {
-	//Get_Encoder_T2();
-  Get_Encoder_T3();
-	Get_Encoder_T5();
-  Get_Encoder_T4();
-  
+	Get_Encoder_T1();  //left
+	Get_Encoder_T2();  //four
+  Get_Encoder_T3();  //rigth
+	Get_Encoder_T5();  //three
+	
+	//计算当前速度
+  LeftWheel.NowSpeed =(int)(GetEncoder.V3/SPEED_TO_ENCODER);
+	RightWheel.NowSpeed=(int)(GetEncoder.V1/SPEED_TO_ENCODER);
+	ThreeWheel.NowSpeed=(int)(GetEncoder.V5/SPEED_TO_ENCODER);
+	FourWheel.NowSpeed =(int)(GetEncoder.V2/SPEED_TO_ENCODER);
 }
 
 

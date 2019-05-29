@@ -72,7 +72,19 @@ int main(void)
 	  USART2_Config(115200);
 		USART3_Config(115200);
 	  Time_Config();							
-	  InitGY85(); 
+	  InitGY85();
+		Init_PID();
+	
+		//LeftWheelSpeedSet(200);
+		//RightWheelSpeedSet(200);
+		//ThreeWheelSpeedSet(300);
+		//FourWheelSpeedSet(300);
+		//SetLeft_Pwm(0,1);
+    //SetRight_Pwm(400,1);
+    //SetThree_Pwm(400,1);
+    //SetFour_Pwm(400,1);
+	  //OmniWheelscontrol(0,0,1,0);
+
 	  
 	
 	  /************************************************************************************/	
@@ -130,8 +142,9 @@ void Task4(void) //任务4  打印数据
 {
 	while(1) 
 	 {		
-			u3_printf("PWM:%d  Right:%d	PWM:%d  Left:%d	PWM:%d	Three:%d	aim:%d\n",RightWheel.MotoPwm,abs(GetEncoder.V3),LeftWheel.MotoPwm,abs(GetEncoder.V5),
-		  ThreeWheel.MotoPwm,abs(GetEncoder.V4),LeftWheel.AimsEncoder);
+		 u3_printf("L:%d  :%d	R:%d  :%d	T:%d	:%d	F:%d	:%d\n",
+		 LeftWheel.NowSpeed,LeftWheel.AimSpeed,RightWheel.NowSpeed,RightWheel.AimSpeed,
+		 ThreeWheel.NowSpeed,ThreeWheel.AimSpeed,FourWheel.NowSpeed,FourWheel.AimSpeed);
   		OS_delayMs(500); 			//示例代码，使用时删除		
 	 }
 }
@@ -152,10 +165,11 @@ void Task5(void) //任务5   200MS检测是否有数据，没有数据则停止运动
 		 }
 		 if(Time_Cnt>200)
 		 {
-			 LeftWheelSpeedSet (0);
-			 RightWheelSpeedSet(0);
-			 ThreeWheelSpeedSet(0);
-			 AllWheel.stop_flag=1;
+			 //LeftWheelSpeedSet (0);
+			 //RightWheelSpeedSet(0);
+			 //ThreeWheelSpeedSet(0);
+			 //FourWheelSpeedSet(0);
+			 //AllWheel.stop_flag=1;
 		 }
      OS_delayMs(1); 				//1Ms进一次
 	 }
