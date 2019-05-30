@@ -145,10 +145,10 @@ void Get_Encoder(void)
 	Get_Encoder_T5();  //three
 	
 	//计算当前速度
-  LeftWheel.NowSpeed =(int)(GetEncoder.V3/SPEED_TO_ENCODER);
-	RightWheel.NowSpeed=(int)(GetEncoder.V1/SPEED_TO_ENCODER);
-	ThreeWheel.NowSpeed=(int)(GetEncoder.V5/SPEED_TO_ENCODER);
-	FourWheel.NowSpeed =(int)(GetEncoder.V2/SPEED_TO_ENCODER);
+  LeftWheel.NowSpeed =(s16)(GetEncoder.V3/SPEED_TO_ENCODER);
+	RightWheel.NowSpeed=(s16)(GetEncoder.V1/SPEED_TO_ENCODER);
+	ThreeWheel.NowSpeed=(s16)(GetEncoder.V5/SPEED_TO_ENCODER);
+	FourWheel.NowSpeed =(s16)(GetEncoder.V2/SPEED_TO_ENCODER);
 }
 
 

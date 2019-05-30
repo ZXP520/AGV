@@ -307,7 +307,6 @@ void USART3_Config(uint32_t BaudRate)
 
 }
 
-
 /********´®¿Ú3¿ÕÏÐÖÐ¶Ïº¯Êý*******/	
 void USART3_IRQHandler(void)
 {
@@ -349,9 +348,8 @@ void DMA1_Channel3_IRQHandler(void)
 void u3_printf(const char *format,...)
 {
 	uint32_t length;
-	static char _dbg_TXBuff[50];
+	static char _dbg_TXBuff[60];
 	va_list args;
- 
 	va_start(args, format);
 	length = vsnprintf((char*)_dbg_TXBuff, sizeof(_dbg_TXBuff), (char*)format, args);
 	va_end(args);

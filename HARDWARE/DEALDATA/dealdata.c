@@ -8,6 +8,7 @@
 #include "Encoder.h"
 #include "bsp_usart.h"
 #include "include.h"
+#include "errordetect.h"
 
 //处理接收到的数据，中断调用
 DEALDATA_RX DealData_Rx;
@@ -84,6 +85,10 @@ void SendEncoderAndIMU20Ms(void)
 			TempTxData.InTempData[4]=GetData(ITG3050_Addr,GYRO_XOUT_H);
 			TempTxData.InTempData[5]=GetData(ITG3050_Addr,GYRO_YOUT_H);
 			TempTxData.InTempData[6]=GetData(ITG3050_Addr,GYRO_ZOUT_H);						//陀螺仪数据
+			//用于错误检测
+			ImuData.NGYData[0]=TempTxData.InTempData[4];
+			ImuData.NGYData[1]=TempTxData.InTempData[5];
+			ImuData.NGYData[2]=TempTxData.InTempData[6];
 			break;
 		}
 		case 3:  //10ms
@@ -91,6 +96,10 @@ void SendEncoderAndIMU20Ms(void)
 			TempTxData.InTempData[7]=GetData(ADXL345_Addr,ACCEL_XOUT_H);
 			TempTxData.InTempData[8]=GetData(ADXL345_Addr,ACCEL_YOUT_H);
 			TempTxData.InTempData[9]=GetData(ADXL345_Addr,ACCEL_ZOUT_H);					//加速度计数据
+			//用于错误检测
+			ImuData.NAccelData[0]=TempTxData.InTempData[7];
+			ImuData.NAccelData[1]=TempTxData.InTempData[8];
+			ImuData.NAccelData[2]=TempTxData.InTempData[9];
 			break;
 		}
 		case 4:  //15ms
@@ -98,6 +107,10 @@ void SendEncoderAndIMU20Ms(void)
 			TempTxData.InTempData[10]=GetQMC5883Data(HMC5883L_Addr,GX_H);
 			TempTxData.InTempData[11]=GetQMC5883Data(HMC5883L_Addr,GY_H);
 			TempTxData.InTempData[12]=GetQMC5883Data(HMC5883L_Addr,GZ_H);					//磁力计数据
+			//用于错误检测
+			ImuData.NMagnetData[0]=TempTxData.InTempData[10];
+			ImuData.NMagnetData[1]=TempTxData.InTempData[11];
+			ImuData.NMagnetData[2]=TempTxData.InTempData[12];
 			
 			break;
 		}
@@ -122,16 +135,7 @@ void SendEncoderAndIMU20Ms(void)
 			break;
 		}
 		default:break;
-	}
-	
-	
-	
-
-	
-
-	
-
-	
+	}	
 }
 
 /*******************************************************************************
@@ -207,12 +211,19 @@ void DealRXData(void)
 		}
 		case WhellRollSpeed: //轮子转速
 		{
-			
+		  //数据放大100倍
+			TempTxData.InTempData[0]=ThreeWheel.NowSpeed*100/(PI*Wheel_D);
+			TempTxData.InTempData[1]=FourWheel.NowSpeed *100/(PI*Wheel_D);
+			TempTxData.InTempData[2]=LeftWheel.NowSpeed *100/(PI*Wheel_D);
+			TempTxData.InTempData[3]=RightWheel.NowSpeed*100/(PI*Wheel_D);
 			break;
 		}
 		case WhellSpeed:     //轮子速度
 		{		
-			
+			TempTxData.InTempData[0]=ThreeWheel.NowSpeed;
+			TempTxData.InTempData[1]=FourWheel.NowSpeed;
+			TempTxData.InTempData[2]=LeftWheel.NowSpeed;
+			TempTxData.InTempData[3]=RightWheel.NowSpeed;
 			break;
 		}
 		case ReductionRatio: //轮子减速比
@@ -289,28 +300,36 @@ void DealRXData(void)
 		}
 		case EmergencyStop:    //急停状态
 		{
-			TempTxData.ChTempData[0]=AllWheel.stop_flag;
+			TempTxData.InTempData[0]=AllWheel.Erroe_flag.data;
 			break;
 		}
 		case VersionNumber:    //版本号
 		{
+			TempTxData.InTempData[0]=VERSIONNUMBER;
 			break;
 		}
 		case RemainingBattery: //剩余电量
 		{
+			TempTxData.ChTempData[0]=AllWheel.Electricity;
 			break;  
 		}
 		
 		//设置命令
 		case SWhellRollSpeed:   //轮子转速
 		{
+			//数据缩小100倍
+			ThreeWheelSpeedSet(TempRxData.InTempData[0]/100*(PI*Wheel_D));//前左
+			FourWheelSpeedSet (TempRxData.InTempData[1]/100*(PI*Wheel_D));//前右
+			LeftWheelSpeedSet	(TempRxData.InTempData[2]/100*(PI*Wheel_D));//左
+		  RightWheelSpeedSet(TempRxData.InTempData[3]/100*(PI*Wheel_D));//右
 			break;  
 		}
 		case SWhellSpeed: 			//轮子速度
 		{
-			AllWheel.stop_flag=0;
-			LeftWheelSpeedSet	(TempRxData.InTempData[0]);
-		  RightWheelSpeedSet(TempRxData.InTempData[1]);
+			ThreeWheelSpeedSet(TempRxData.InTempData[0]);//前左
+			FourWheelSpeedSet (TempRxData.InTempData[1]);//前右
+			LeftWheelSpeedSet	(TempRxData.InTempData[2]);//左
+		  RightWheelSpeedSet(TempRxData.InTempData[3]);//右
 			break;
 		}
 		case STurningRadius:    //拐弯半径
@@ -321,9 +340,10 @@ void DealRXData(void)
 		{
 			break;
 		}
+		
+		
 		case SChassisAttitude:  //底盘姿态
 		{
-			AllWheel.stop_flag=0;
 			OmniWheelscontrol(TempRxData.InTempData[0],TempRxData.InTempData[1],TempRxData.InTempData[2],0);
 			break;
 		}

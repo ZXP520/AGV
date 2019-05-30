@@ -369,7 +369,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\HARDWARE\LED;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\STM32F10x_FWLib\inc;..\CORE;..\HARDWARE\KEY;..\HARDWARE\TIMER;..\HARDWARE\ADC;..\HARDWARE\PID;..\HARDWARE\RUNCONTROL;..\HARDWARE\MODBUS;..\HARDWARE\PS;..\HARDWARE\CONTROL;..\HARDWARE\KALMAN;..\HARDWARE\DEALDATA;..\HARDWARE\ENCODER;..\HARDWARE\IIC;..\HARDWARE\GY85;..\FSC_STOS</IncludePath>
+              <IncludePath>..\HARDWARE\LED;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\STM32F10x_FWLib\inc;..\CORE;..\HARDWARE\KEY;..\HARDWARE\TIMER;..\HARDWARE\ADC;..\HARDWARE\PID;..\HARDWARE\RUNCONTROL;..\HARDWARE\MODBUS;..\HARDWARE\PS;..\HARDWARE\CONTROL;..\HARDWARE\KALMAN;..\HARDWARE\DEALDATA;..\HARDWARE\ENCODER;..\HARDWARE\IIC;..\HARDWARE\GY85;..\FSC_STOS;..\HARDWARE\ERROR</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -466,6 +466,16 @@
               <FileName>include.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\HARDWARE\TIMER\include.h</FilePath>
+            </File>
+            <File>
+              <FileName>adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\ADC\adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>errordetect.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\ERROR\errordetect.c</FilePath>
             </File>
           </Files>
         </Group>

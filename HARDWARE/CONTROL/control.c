@@ -121,17 +121,17 @@ void RunWheelcontrol(void)
 	float temp=0;
 	
 	//停车标志 进入抱死状态
-	if(AllWheel.stop_flag)
+	if(AllWheel.Erroe_flag.bits.bit0||(LeftWheel.AimSpeed==0&&RightWheel.AimSpeed==0&&ThreeWheel.AimSpeed==0&&FourWheel.AimSpeed==0))
 	{
 		TIM_SetCompare1(TIM8,0); 
 		TIM_SetCompare2(TIM8,0);
 		TIM_SetCompare3(TIM8,0); 
 		TIM_SetCompare4(TIM8,0); 
 		
-		TIM_SetCompare1(TIM1,0); 
-		TIM_SetCompare2(TIM1,0); 
-		TIM_SetCompare3(TIM1,0); 
-		TIM_SetCompare4(TIM1,0); 
+		TIM_SetCompare1(TIM4,0); 
+		TIM_SetCompare2(TIM4,0); 
+		TIM_SetCompare3(TIM4,0); 
+		TIM_SetCompare4(TIM4,0); 
 		return;
 	}
 	
@@ -415,21 +415,21 @@ void PID_AbsoluteMode(PID_AbsoluteType* PID)
 		L为轮子到中心的距离
     顺时针为正
 */
-#define  L 157 //轮子到中心的距离
+//#define  L 157 //轮子到中心的距离
 //旋转顺时针为正
 void OmniWheelscontrol(s16 Vx,s16 Vy,s16 W,s16 a)
 {
-	static double Va,Vb,Vc;
+	static double Va,Vb,Vc,DW;
 	Vx=-Vx;
-	W=-W;
-	Va=Vx*cos(a)+Vy*sin(a)+W*L;
-	Vb=Vx*(-cos(PI/3)*cos(a)+sin(PI/6)*sin(a))+Vy*(-cos(PI/3)*sin(a)-sin(PI/3)*cos(a))+W*L;
-	Vc=Vx*(-sin(PI/6)*cos(a)+cos(PI/6)*sin(a))+Vy*(-sin(PI/6)*sin(a)+cos(PI/6)*cos(a))+W*L;
+	DW=-W/100;//数据放大了100倍
+	Va=Vx*cos(a)+Vy*sin(a)+DW*Wheel_SPACING;
+	Vb=Vx*(-cos(PI/3)*cos(a)+sin(PI/6)*sin(a))+Vy*(-cos(PI/3)*sin(a)-sin(PI/3)*cos(a))+DW*Wheel_SPACING;
+	Vc=Vx*(-sin(PI/6)*cos(a)+cos(PI/6)*sin(a))+Vy*(-sin(PI/6)*sin(a)+cos(PI/6)*cos(a))+DW*Wheel_SPACING;
 	
 	LeftWheelSpeedSet ( Va);
 	RightWheelSpeedSet( Vb);
 	ThreeWheelSpeedSet( Vc);
-	
+
 	//逆时针转动
 	//LeftWheelSpeedSet( 200);
 	//RightWheelSpeedSet(200);

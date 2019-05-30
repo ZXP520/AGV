@@ -41,6 +41,7 @@
 #include "stm32f10x_it.h" 
 #include "Encoder.h"
 #include "bsp_usart.h"
+#include "errordetect.h"
 
 
 /******************************创建任务参数*************************/
@@ -74,16 +75,18 @@ int main(void)
 	  Time_Config();							
 	  InitGY85();
 		Init_PID();
+		Adc_Init();
+		Init_ErrorDetect();
 	
-		//LeftWheelSpeedSet(200);
-		//RightWheelSpeedSet(200);
-		//ThreeWheelSpeedSet(300);
-		//FourWheelSpeedSet(300);
+		//LeftWheelSpeedSet(196);
+		//RightWheelSpeedSet(196);/
+		//ThreeWheelSpeedSet(196);
+		//FourWheelSpeedSet(196);
 		//SetLeft_Pwm(0,1);
     //SetRight_Pwm(400,1);
     //SetThree_Pwm(400,1);
     //SetFour_Pwm(400,1);
-	  //OmniWheelscontrol(0,0,1,0);
+	  //OmniWheelscontrol(0,100,0,0);
 
 	  
 	
@@ -105,17 +108,24 @@ int main(void)
 
 /*******************************************************************************************************/
 /*********************************用户任务实体代码区************************************/
-void Task1(void)  //任务1  得到编码器数据 
+
+/**************************************************************************
+任务1  得到编码器数据 
+**************************************************************************/
+void Task1(void)
 { 	
 	while(1) 
 	 {
 		 //PID控制应该放到中断中调速	  
 		 Get_Encoder();
-  	 OS_delayMs(10);			//示例代码，使用时删除		 
+  	 OS_delayMs(10); 
 	 }	
 }
 
-void Task2(void) //任务2   PID调速
+/**************************************************************************
+任务2  PID调速
+**************************************************************************/
+void Task2(void)  
 {
 	while(1) 
 	 {
@@ -125,11 +135,14 @@ void Task2(void) //任务2   PID调速
 			RunWheelcontrol();
 		  OSSchedUnlock();
 			#endif	  
-  	  OS_delayMs(10);			//示例代码，使用时删除		 
+  	  OS_delayMs(10);			
 	 }			
 }
 
-void Task3(void) //任务3 串口2发送数据给ROS
+/**************************************************************************
+任务3  串口2发送数据给ROS
+**************************************************************************/
+void Task3(void)
 {	
 	while(1) 
 	 {	 
@@ -138,18 +151,25 @@ void Task3(void) //任务3 串口2发送数据给ROS
 	 }			
 }
 
-void Task4(void) //任务4  打印数据
+/**************************************************************************
+任务4  串口3打印数据
+**************************************************************************/
+void Task4(void) //任务4  
 {
 	while(1) 
 	 {		
-		 u3_printf("L:%d  :%d	R:%d  :%d	T:%d	:%d	F:%d	:%d\n",
+		 Get_PowerData();//计算电量
+		 u3_printf("L:%d  :%d	R:%d  :%d	T:%d	:%d	F:%d	:%d	ADC:%d \r\n",
 		 LeftWheel.NowSpeed,LeftWheel.AimSpeed,RightWheel.NowSpeed,RightWheel.AimSpeed,
-		 ThreeWheel.NowSpeed,ThreeWheel.AimSpeed,FourWheel.NowSpeed,FourWheel.AimSpeed);
-  		OS_delayMs(500); 			//示例代码，使用时删除		
+		 ThreeWheel.NowSpeed,ThreeWheel.AimSpeed,FourWheel.NowSpeed,FourWheel.AimSpeed,AllWheel.Electricity);
+  	 OS_delayMs(500); 			//示例代码，使用时删除		
 	 }
 }
 
-void Task5(void) //任务5   200MS检测是否有数据，没有数据则停止运动
+/**************************************************************************
+任务5  200MS检测是否有数据，没有数据则停止运动
+**************************************************************************/
+void Task5(void)  
 {
 	static u8 Time_Cnt=0;
 	while(1) 
@@ -163,17 +183,15 @@ void Task5(void) //任务5   200MS检测是否有数据，没有数据则停止运动
 		 {
 			 Time_Cnt++;
 		 }
-		 if(Time_Cnt>200)
+		 if(Time_Cnt>2)
 		 {
-			 //LeftWheelSpeedSet (0);
-			 //RightWheelSpeedSet(0);
-			 //ThreeWheelSpeedSet(0);
-			 //FourWheelSpeedSet(0);
-			 //AllWheel.stop_flag=1;
+			 AllWheel.Erroe_flag.bits.bit0=1;
 		 }
-     OS_delayMs(1); 				//1Ms进一次
+		 
+		 //故障检测
+		 ErrorDetect();
+     OS_delayMs(100); 				//1Ms进一次
 	 }
 }
-
 /********************************************************************************************/
 

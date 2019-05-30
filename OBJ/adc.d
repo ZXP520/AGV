@@ -17,4 +17,4 @@
 ..\obj\adc.o: ..\HARDWARE\TIMER\include.h
 ..\obj\adc.o: ..\STM32F10x_FWLib\inc\stm32f10x_tim.h
 ..\obj\adc.o: D:\keil5\ARM\ARMCC\Bin\..\include\stdio.h
-..\obj\adc.o: ..\HARDWARE\MODBUS\RS485.h
+..\obj\adc.o: ..\HARDWARE\CONTROL\control.h

@@ -8,6 +8,8 @@
 "..\obj\encoder.o"
 "..\obj\myiic.o"
 "..\obj\gy85.o"
+"..\obj\adc.o"
+"..\obj\errordetect.o"
 "..\obj\sys.o"
 "..\obj\bsp_usart.o"
 "..\obj\core_cm3.o"
