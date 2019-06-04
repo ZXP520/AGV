@@ -8,7 +8,7 @@
 #include "Encoder.h"
 #include "bsp_usart.h"
 #include "include.h"
-#include "errordetect.h"
+#include "errordetect.h" 
 
 //处理接收到的数据，中断调用
 DEALDATA_RX DealData_Rx;
@@ -312,6 +312,19 @@ void DealRXData(void)
 		{
 			TempTxData.ChTempData[0]=AllWheel.Electricity;
 			break;  
+		}
+		case HardwareParameter://硬件参数
+		{
+			TempTxData.InTempData[0]=Wheel_D;      					//轮子直径
+			TempTxData.InTempData[1]=Wheel_SPACING; 				//轮间距
+			TempTxData.InTempData[2]=Wheel_RATIO;						//电机减速比
+			TempTxData.InTempData[3]=ENCODER_LINE;  				//编码器线数
+			TempTxData.InTempData[4]=VERSIONNUMBER; 				//版本号
+			TempTxData.ChTempData[10]=AllWheel.Electricity; //电量
+			DealData_Rx.Hardware_Init=1;
+			//OSTaskStateSet(Task3,TASK_RUNNING);
+			//OSTaskStateSet(Task5,TASK_RUNNING);
+			break; 
 		}
 		
 		//设置命令

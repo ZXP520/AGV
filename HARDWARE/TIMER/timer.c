@@ -286,9 +286,9 @@ void Time_Config(void)
 	TIM1_Configuration();
 	TIM2_Configuration();
 	TIM3_Configuration();
-	TIM4_PWM_Init(TIM8_Period-1,30-1);  //分频。PWM频率=72000/5/1200=12Khz
+	//TIM4_PWM_Init(TIM8_Period-1,30-1);  //分频。PWM频率=72000/5/1200=12Khz
 	TIM5_Configuration();
-	TIM8_PWM_Init(TIM8_Period-1,30-1);	//分频。PWM频率=72000/5/1200=12Khz
+	TIM8_PWM_Init(TIM8_Period-1,5-1);	//分频。PWM频率=72000/5/1200=12Khz
 }
 
 

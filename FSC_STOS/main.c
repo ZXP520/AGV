@@ -78,11 +78,11 @@ int main(void)
 		Adc_Init();
 		Init_ErrorDetect();
 	
-		//LeftWheelSpeedSet(196);
+		LeftWheelSpeedSet(100);
 		//RightWheelSpeedSet(196);/
 		//ThreeWheelSpeedSet(196);
 		//FourWheelSpeedSet(196);
-		//SetLeft_Pwm(0,1);
+		//SetLeft_Pwm(400,1);
     //SetRight_Pwm(400,1);
     //SetThree_Pwm(400,1);
     //SetFour_Pwm(400,1);
@@ -95,9 +95,9 @@ int main(void)
 	  /********************************在系统中创建任务***********************************/
     OSTaskCreate("Task1",Task1,(OS_STK*)&Task1_Stk[Task1_StkSize-1],TASK_RUNNING); //创建任务1
     OSTaskCreate("Task2",Task2,(OS_STK*)&Task2_Stk[Task2_StkSize-1],TASK_RUNNING); //创建任务2
-    OSTaskCreate("Task3",Task3,(OS_STK*)&Task3_Stk[Task3_StkSize-1],TASK_RUNNING); //创建任务3
+    OSTaskCreate("Task3",Task3,(OS_STK*)&Task3_Stk[Task3_StkSize-1],TASK_PAUSING); //创建任务3 任务暂停
 	  OSTaskCreate("Task4",Task4,(OS_STK*)&Task4_Stk[Task4_StkSize-1],TASK_RUNNING); //创建任务4
-		OSTaskCreate("Task5",Task5,(OS_STK*)&Task5_Stk[Task5_StkSize-1],TASK_RUNNING); //创建任务5
+		OSTaskCreate("Task5",Task5,(OS_STK*)&Task5_Stk[Task5_StkSize-1],TASK_PAUSING); //创建任务5 任务暂停
 	  /***********************************************************************************/
     OSStart();//OS开始运行
 }
@@ -152,45 +152,47 @@ void Task3(void)
 }
 
 /**************************************************************************
-任务4  串口3打印数据
+任务4  串口3打印数据且检测硬件初始化
 **************************************************************************/
 void Task4(void) //任务4  
 {
 	while(1) 
 	 {		
+		 //如果任务3和任务5处于暂停状态，且硬件初始化成功，则开启任务3和任务5
+		 if(OSTaskStateGet(Task3)==TASK_PAUSING && OSTaskStateGet(Task5)==TASK_PAUSING && DealData_Rx.Hardware_Init)
+		 {
+			 OSTaskStateSet(Task3,TASK_RUNNING);
+			 OSTaskStateSet(Task5,TASK_RUNNING);
+		 }
+		 
 		 Get_PowerData();//计算电量
+		 /*
 		 u3_printf("L:%d  :%d	R:%d  :%d	T:%d	:%d	F:%d	:%d	ADC:%d \r\n",
 		 LeftWheel.NowSpeed,LeftWheel.AimSpeed,RightWheel.NowSpeed,RightWheel.AimSpeed,
 		 ThreeWheel.NowSpeed,ThreeWheel.AimSpeed,FourWheel.NowSpeed,FourWheel.AimSpeed,AllWheel.Electricity);
-  	 OS_delayMs(500); 			//示例代码，使用时删除		
+		 */
+		 
+		 
+	
+		 u3_printf("L:%d  :%d	R:%d  :%d	T:%d	:%d	F:%d	:%d	ADC:%d \r\n",
+		 GetEncoder.V3,LeftWheel.AimsEncoder,RightWheel.NowSpeed,RightWheel.AimSpeed,
+		 ThreeWheel.NowSpeed,ThreeWheel.AimSpeed,FourWheel.NowSpeed,FourWheel.AimSpeed,AllWheel.Electricity);
+		
+  	 OS_delayMs(500); 			 //500ms进入一次
 	 }
 }
 
 /**************************************************************************
-任务5  200MS检测是否有数据，没有数据则停止运动
+任务5  100MS故障检测，如有故障1S上传一次
 **************************************************************************/
 void Task5(void)  
 {
 	static u8 Time_Cnt=0;
 	while(1) 
 	 {	
-		 if(DealData_Rx.Success_Flag)
-		 {
-			 Time_Cnt=0;
-			 DealData_Rx.Success_Flag=0;
-		 }
-		 else
-		 {
-			 Time_Cnt++;
-		 }
-		 if(Time_Cnt>2)
-		 {
-			 AllWheel.Erroe_flag.bits.bit0=1;
-		 }
-		 
 		 //故障检测
 		 ErrorDetect();
-     OS_delayMs(100); 				//1Ms进一次
+     OS_delayMs(100); 				//100Ms进一次
 	 }
 }
 /********************************************************************************************/

@@ -284,8 +284,8 @@ PID_AddType LeftPID,RightPID,ThreePID,FourPID;
 //PID参数初始化
 void Init_PID(void)
 {
-	LeftPID.kp=120;
-	LeftPID.ki=3;
+	LeftPID.kp=2.1;
+	LeftPID.ki=0.11;
 	
 	RightPID.kp=120;
 	RightPID.ki=3;
